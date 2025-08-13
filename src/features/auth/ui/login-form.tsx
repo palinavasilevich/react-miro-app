@@ -11,29 +11,26 @@ import {
 } from "@/shared/ui/kit/form";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
-import { useRegister } from "./use-register";
+import { useLogin } from "../model/use-login";
 
-const registerSchema = z
-  .object({
-    email: z.string("Email is required").email("Invalid email"),
-    password: z
-      .string("Password is required")
-      .min(6, "Password must be at least 6 characters long"),
-    confirmPassword: z.string().optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "The passwords do not match",
-  });
+const loginSchema = z.object({
+  email: z.string("Email is required").email("Invalid email"),
+  password: z
+    .string("Password is required")
+    .min(6, "Password must be at least 6 characters long"),
+});
 
-export function RegisterForm() {
+export function LoginForm() {
   const form = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
   });
 
-  const { isPending, errorMessage, register } = useRegister();
+  const { isPending, errorMessage, login } = useLogin();
 
-  const onSubmit = form.handleSubmit((data) => register(data));
+  const onSubmit = form.handleSubmit((data) => login(data));
+
+  if (isPending) {
+  }
 
   return (
     <Form {...form}>
@@ -66,26 +63,12 @@ export function RegisterForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         {errorMessage && (
           <p className="text-destructive text-sm">{errorMessage}</p>
         )}
 
         <Button type="submit" disabled={isPending}>
-          Sign Up
+          Login
         </Button>
       </form>
     </Form>

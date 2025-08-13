@@ -11,26 +11,29 @@ import {
 } from "@/shared/ui/kit/form";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
-import { useLogin } from "./use-login";
+import { useRegister } from "../model/use-register";
 
-const loginSchema = z.object({
-  email: z.string("Email is required").email("Invalid email"),
-  password: z
-    .string("Password is required")
-    .min(6, "Password must be at least 6 characters long"),
-});
-
-export function LoginForm() {
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
+const registerSchema = z
+  .object({
+    email: z.string("Email is required").email("Invalid email"),
+    password: z
+      .string("Password is required")
+      .min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "The passwords do not match",
   });
 
-  const { isPending, errorMessage, login } = useLogin();
+export function RegisterForm() {
+  const form = useForm({
+    resolver: zodResolver(registerSchema),
+  });
 
-  const onSubmit = form.handleSubmit((data) => login(data));
+  const { isPending, errorMessage, register } = useRegister();
 
-  if (isPending) {
-  }
+  const onSubmit = form.handleSubmit((data) => register(data));
 
   return (
     <Form {...form}>
@@ -63,12 +66,26 @@ export function LoginForm() {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {errorMessage && (
           <p className="text-destructive text-sm">{errorMessage}</p>
         )}
 
         <Button type="submit" disabled={isPending}>
-          Login
+          Sign Up
         </Button>
       </form>
     </Form>
