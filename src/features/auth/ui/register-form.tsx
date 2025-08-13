@@ -29,6 +29,10 @@ const registerSchema = z
 export function RegisterForm() {
   const form = useForm({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const { isPending, errorMessage, register } = useRegister();

@@ -23,6 +23,10 @@ const loginSchema = z.object({
 export function LoginForm() {
   const form = useForm({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const { isPending, errorMessage, login } = useLogin();
