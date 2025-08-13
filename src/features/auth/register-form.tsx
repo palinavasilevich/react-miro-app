@@ -11,6 +11,7 @@ import {
 } from "@/shared/ui/kit/form";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
+import { useRegister } from "./use-register";
 
 const registerSchema = z
   .object({
@@ -30,7 +31,9 @@ export function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = form.handleSubmit((data) => console.log(data));
+  const { isPending, errorMessage, register } = useRegister();
+
+  const onSubmit = form.handleSubmit((data) => register(data));
 
   return (
     <Form {...form}>
@@ -76,7 +79,14 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Sign Up</Button>
+
+        {errorMessage && (
+          <p className="text-destructive text-sm">{errorMessage}</p>
+        )}
+
+        <Button type="submit" disabled={isPending}>
+          Sign Up
+        </Button>
       </form>
     </Form>
   );
