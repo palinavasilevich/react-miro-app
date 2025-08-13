@@ -11,6 +11,7 @@ import {
 } from "@/shared/ui/kit/form";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
+import { useLogin } from "./use-login";
 
 const loginSchema = z.object({
   email: z.string("Email is required").email("Invalid email"),
@@ -24,7 +25,12 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = form.handleSubmit((data) => console.log(data));
+  const { isPending, errorMessage, login } = useLogin();
+
+  const onSubmit = form.handleSubmit((data) => login(data));
+
+  if (isPending) {
+  }
 
   return (
     <Form {...form}>
@@ -56,7 +62,14 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Login</Button>
+
+        {errorMessage && (
+          <p className="text-destructive text-sm">{errorMessage}</p>
+        )}
+
+        <Button type="submit" disabled={isPending}>
+          Login
+        </Button>
       </form>
     </Form>
   );
