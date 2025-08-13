@@ -9,18 +9,13 @@ import {
 } from "@/shared/ui/kit/card";
 
 type Props = {
-  children: ReactNode;
+  form: ReactNode;
   title: ReactNode;
   description: ReactNode;
   footerText: ReactNode;
 };
 
-export function AuthLayout({
-  children,
-  title,
-  description,
-  footerText,
-}: Props) {
+export function AuthLayout({ form, title, description, footerText }: Props) {
   return (
     <main className="grow flex flex-col pt-[200px] items-center">
       <Card className="w-full max-w-[400px]">
@@ -28,7 +23,7 @@ export function AuthLayout({
           <CardTitle className="text-center">{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>
-        <CardContent>{children}</CardContent>
+        <CardContent>{form}</CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground [&_a]:underline [&_a]:text-primary">
             {footerText}

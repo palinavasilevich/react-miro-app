@@ -1,20 +1,20 @@
-import { ROUTES } from "@/shared/model/routes";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@/shared/model/routes";
 import { AuthLayout } from "./auth-layout";
+import { LoginForm } from "./login-form";
 
 function LoginPage() {
   return (
     <AuthLayout
       title="Login"
       description="Enter your email and password"
+      form={<LoginForm />}
       footerText={
         <>
           Don't have an account yet? <Link to={ROUTES.REGISTER}>Sign up</Link>
         </>
       }
-    >
-      <form></form>
-    </AuthLayout>
+    ></AuthLayout>
   );
 }
 
