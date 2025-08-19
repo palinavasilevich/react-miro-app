@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { rqClient } from "@/shared/api/instance";
+import { publicRqClient } from "@/shared/api/instance";
 import { ROUTES } from "@/shared/model/routes";
 import type { ApiSchemas } from "@/shared/api/schema";
 import { useSession } from "@/shared/model/session";
@@ -8,7 +8,7 @@ export function useLogin() {
   const navigate = useNavigate();
   const session = useSession();
 
-  const loginMutation = rqClient.useMutation("post", "/auth/login", {
+  const loginMutation = publicRqClient.useMutation("post", "/auth/login", {
     onSuccess: (data) => {
       session.login(data.accessToken);
       navigate(ROUTES.HOME);

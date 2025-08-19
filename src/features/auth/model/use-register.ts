@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { rqClient } from "@/shared/api/instance";
+import { publicRqClient } from "@/shared/api/instance";
 import { ROUTES } from "@/shared/model/routes";
 import type { ApiSchemas } from "@/shared/api/schema";
 import { useSession } from "@/shared/model/session";
@@ -8,12 +8,16 @@ export function useRegister() {
   const navigate = useNavigate();
   const session = useSession();
 
-  const registerMutation = rqClient.useMutation("post", "/auth/register", {
-    onSuccess: (data) => {
-      session.login(data.accessToken);
-      navigate(ROUTES.LOGIN);
+  const registerMutation = publicRqClient.useMutation(
+    "post",
+    "/auth/register",
+    {
+      onSuccess: (data) => {
+        session.login(data.accessToken);
+        navigate(ROUTES.LOGIN);
+      },
     },
-  });
+  );
 
   const register = (data: ApiSchemas["RegisterRequest"]) => {
     registerMutation.mutate({ body: data });
