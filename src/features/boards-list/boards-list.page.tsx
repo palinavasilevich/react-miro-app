@@ -20,6 +20,7 @@ import { type ApiSchemas } from "@/shared/api/schema";
 import { useBoardsList } from "./use-boards-list";
 import { useBoardsFilters, type BoardsSortOption } from "./use-boards-filters";
 import { useDebouncedValue } from "@/shared/lib/react";
+import { useCreateBoard } from "./use-create-board";
 
 function BoardsListPage() {
   const queryClient = useQueryClient();
@@ -30,13 +31,7 @@ function BoardsListPage() {
     search: useDebouncedValue(boardsFilters.search, 300),
   });
 
-  const createBoardMutation = rqClient.useMutation("post", "/boards", {
-    onSettled: async () => {
-      await queryClient.invalidateQueries(
-        rqClient.queryOptions("get", "/boards"),
-      );
-    },
-  });
+  const createBoardMutation = useCreateBoard();
 
   const deleteBoardMutation = rqClient.useMutation(
     "delete",
@@ -114,26 +109,12 @@ function BoardsListPage() {
       </Tabs>
 
       <div className="mb-8">
-        <form
-          className="flex gap-4 items-end"
-          onSubmit={(e) => {
-            e.preventDefault();
-            createBoardMutation.mutate({});
-            e.currentTarget.reset();
-          }}
+        <Button
+          disabled={createBoardMutation.isPending}
+          onClick={createBoardMutation.createBoard}
         >
-          <div className="flex-grow">
-            <Label htmlFor="board-name">Name of the new board</Label>
-            <Input
-              id="board-name"
-              name="name"
-              placeholder="Enter name of board..."
-            />
-          </div>
-          <Button type="submit" disabled={createBoardMutation.isPending}>
-            Create board
-          </Button>
-        </form>
+          Create board
+        </Button>
       </div>
 
       {boardsQuery.isPending ? (
