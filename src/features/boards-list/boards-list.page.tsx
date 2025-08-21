@@ -101,7 +101,11 @@ function BoardsListPage() {
                     onClick={() => updateFavoriteBoardsMutation.toggle(board)}
                   >
                     <StarIcon
-                      fill={board.isFavorite ? "#8200db" : "transparent"}
+                      fill={
+                        updateFavoriteBoardsMutation.isOptimisticFavorite(board)
+                          ? "#8200db"
+                          : "transparent"
+                      }
                     />
                   </Button>
                 </div>

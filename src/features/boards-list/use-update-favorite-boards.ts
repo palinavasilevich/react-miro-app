@@ -1,36 +1,17 @@
-import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import { startTransition, useOptimistic } from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
 import { rqClient } from "@/shared/api/instance";
-import type { ApiSchemas } from "@/shared/api/schema";
 
 export function useUpdateFavoriteBoards() {
   const queryClient = useQueryClient();
+
+  const [favorite, setFavorite] = useOptimistic<Record<string, boolean>>({});
 
   const updateFavoriteBoardsMutation = rqClient.useMutation(
     "put",
     "/boards/{boardId}/favorite",
     {
-      onMutate: async ({ params, body }) => {
-        await queryClient.cancelQueries(
-          rqClient.queryOptions("get", "/boards"),
-        );
-
-        queryClient.setQueriesData(
-          rqClient.queryOptions("get", "/boards"),
-          (data: InfiniteData<ApiSchemas["BoardsList"]>) => {
-            return {
-              ...data,
-              pages: data.pages.map((page) => ({
-                ...page,
-                list: page.list.map((board) =>
-                  board.id === params.path.boardId
-                    ? { ...board, isFavorite: body.isFavorite }
-                    : board,
-                ),
-              })),
-            };
-          },
-        );
-      },
       onSettled: async () => {
         await queryClient.invalidateQueries(
           rqClient.queryOptions("get", "/boards"),
@@ -40,11 +21,20 @@ export function useUpdateFavoriteBoards() {
   );
 
   const toggle = (board: { id: string; isFavorite: boolean }) => {
-    updateFavoriteBoardsMutation.mutate({
-      params: { path: { boardId: board.id } },
-      body: { isFavorite: !board.isFavorite },
+    startTransition(async () => {
+      setFavorite((prev) => ({
+        ...prev,
+        [board.id]: !board.isFavorite,
+      }));
+      await updateFavoriteBoardsMutation.mutateAsync({
+        params: { path: { boardId: board.id } },
+        body: { isFavorite: !board.isFavorite },
+      });
     });
   };
 
-  return { toggle };
+  const isOptimisticFavorite = (board: { id: string; isFavorite: boolean }) =>
+    favorite[board.id] ?? board.isFavorite;
+
+  return { toggle, isOptimisticFavorite };
 }
