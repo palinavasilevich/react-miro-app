@@ -1,6 +1,6 @@
 type BoardsListLayoutProps = {
   header: React.ReactNode;
-  filters: React.ReactNode;
+  filters?: React.ReactNode;
   list?: React.ReactNode;
   children: React.ReactNode;
 };
