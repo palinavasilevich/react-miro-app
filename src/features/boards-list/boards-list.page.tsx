@@ -1,5 +1,4 @@
 import { Link, href } from "react-router-dom";
-import { CONFIG } from "@/shared/model/config";
 import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardFooter, CardHeader } from "@/shared/ui/kit/card";
@@ -20,7 +19,8 @@ import { useDebouncedValue } from "@/shared/lib/react";
 import { useCreateBoard } from "./use-create-board";
 import { useDeleteBoard } from "./use-delete-board";
 import { useUpdateFavoriteBoards } from "./use-update-favorite-boards";
-import { StarIcon } from "lucide-react";
+import { PlusIcon, StarIcon } from "lucide-react";
+import { BoardsListLayout, BoardsListLayoutHeader } from "./boards-list-layout";
 
 function BoardsListPage() {
   const boardsFilters = useBoardsFilters();
@@ -34,9 +34,23 @@ function BoardsListPage() {
   const updateFavoriteBoardsMutation = useUpdateFavoriteBoards();
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Boards {CONFIG.API_BASE_URL}</h1>
-
+    <BoardsListLayout
+      header={
+        <BoardsListLayoutHeader
+          title="All Boards"
+          description="Here you can view and manage your boards"
+          actions={
+            <Button
+              disabled={createBoardMutation.isPending}
+              onClick={createBoardMutation.createBoard}
+            >
+              <PlusIcon />
+              Create board
+            </Button>
+          }
+        />
+      }
+    >
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="md:col-span-3">
           <Label htmlFor="search">Search</Label>
@@ -76,15 +90,6 @@ function BoardsListPage() {
           <TabsTrigger value="favorites">Favorites</TabsTrigger>
         </TabsList>
       </Tabs>
-
-      <div className="mb-8">
-        <Button
-          disabled={createBoardMutation.isPending}
-          onClick={createBoardMutation.createBoard}
-        >
-          Create board
-        </Button>
-      </div>
 
       {boardsQuery.isPending ? (
         <div className="text-center py-10">Loading...</div>
@@ -156,7 +161,7 @@ function BoardsListPage() {
           )}
         </>
       )}
-    </div>
+    </BoardsListLayout>
   );
 }
 
