@@ -1,6 +1,4 @@
 import { Link, href } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import { rqClient } from "@/shared/api/instance";
 import { CONFIG } from "@/shared/model/config";
 import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
@@ -14,18 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/kit/select";
-import { Switch } from "@/shared/ui/kit/switch";
+
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
-import { type ApiSchemas } from "@/shared/api/schema";
 import { useBoardsList } from "./use-boards-list";
 import { useBoardsFilters, type BoardsSortOption } from "./use-boards-filters";
 import { useDebouncedValue } from "@/shared/lib/react";
 import { useCreateBoard } from "./use-create-board";
 import { useDeleteBoard } from "./use-delete-board";
+import { useUpdateFavoriteBoards } from "./use-update-favorite-boards";
+import { StarIcon } from "lucide-react";
 
 function BoardsListPage() {
-  const queryClient = useQueryClient();
-
   const boardsFilters = useBoardsFilters();
   const boardsQuery = useBoardsList({
     sort: boardsFilters.sort,
@@ -34,25 +31,7 @@ function BoardsListPage() {
 
   const createBoardMutation = useCreateBoard();
   const deleteBoardMutation = useDeleteBoard();
-
-  const toggleFavoriteMutation = rqClient.useMutation(
-    "put",
-    "/boards/{boardId}/favorite",
-    {
-      onSettled: async () => {
-        await queryClient.invalidateQueries(
-          rqClient.queryOptions("get", "/boards"),
-        );
-      },
-    },
-  );
-
-  const handleToggleFavorite = (board: ApiSchemas["Board"]) => {
-    toggleFavoriteMutation.mutate({
-      params: { path: { boardId: board.id } },
-      body: { isFavorite: !board.isFavorite },
-    });
-  };
+  const updateFavoriteBoardsMutation = useUpdateFavoriteBoards();
 
   return (
     <div className="container mx-auto p-4">
@@ -115,10 +94,16 @@ function BoardsListPage() {
             {boardsQuery.boards.map((board) => (
               <Card key={board.id} className="relative">
                 <div className="absolute top-2 right-2 flex items-center gap-2">
-                  <Switch
-                    checked={board.isFavorite}
-                    onCheckedChange={() => handleToggleFavorite(board)}
-                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-500 cursor-pointer hover:bg-transparent "
+                    onClick={() => updateFavoriteBoardsMutation.toggle(board)}
+                  >
+                    <StarIcon
+                      fill={board.isFavorite ? "#8200db" : "transparent"}
+                    />
+                  </Button>
                 </div>
                 <CardHeader>
                   <div className="flex flex-col gap-2">
