@@ -2,8 +2,8 @@ import { Link, href } from "react-router-dom";
 import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardHeader, CardFooter } from "@/shared/ui/kit/card";
-import { StarIcon } from "lucide-react";
 import type { ApiSchemas } from "@/shared/api/schema";
+import { BoardsFavoriteToggle } from "./boards-favorite-toggle";
 
 type BoardsListCardProps = {
   board: ApiSchemas["Board"];
@@ -22,15 +22,11 @@ export function BoardsListCard({
 }: BoardsListCardProps) {
   return (
     <Card className="relative">
-      <div className="absolute top-2 right-2 flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-gray-500 cursor-pointer hover:bg-transparent "
-          onClick={() => onFavoriteToggle(board)}
-        >
-          <StarIcon fill={isFavorite ? "#8200db" : "transparent"} />
-        </Button>
+      <div className="absolute top-2 right-2">
+        <BoardsFavoriteToggle
+          isFavorite={isFavorite}
+          onToggle={() => onFavoriteToggle(board)}
+        />
       </div>
       <CardHeader>
         <div className="flex flex-col gap-2">
