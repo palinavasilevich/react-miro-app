@@ -1,3 +1,6 @@
+import { Skeleton } from "@/shared/ui/kit/skeleton";
+import type { ViewMode } from "./view-mode-toggle";
+
 type BoardsListLayoutProps = {
   header: React.ReactNode;
   filters?: React.ReactNode;
@@ -60,13 +63,17 @@ export function BoardsListLayoutFilters({
     <div className="flex items-center gap-4">
       {filters && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Filter By</span>
+          <span className="text-sm text-gray-500 whitespace-nowrap">
+            Filter By
+          </span>
           {filters}
         </div>
       )}
       {sort && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Sort By</span>
+          <span className="text-sm text-gray-500 whitespace-nowrap">
+            Sort By
+          </span>
           {sort}
         </div>
       )}
@@ -75,13 +82,16 @@ export function BoardsListLayoutFilters({
   );
 }
 
-type BoardsListProps = {
-  children: React.ReactNode;
+type BoardsListLayoutContent = {
+  children?: React.ReactNode;
   isEmpty?: boolean;
   isPending?: boolean;
   isPendingNextPage?: boolean;
-  cursorRef?: React.RefCallback<HTMLDivElement>;
   hasCursor?: boolean;
+  mode: ViewMode;
+  renderList: () => React.ReactNode;
+  renderGrid: () => React.ReactNode;
+  cursorRef?: React.RefCallback<HTMLDivElement>;
 };
 
 export function BoardsListLayoutContent({
@@ -89,12 +99,25 @@ export function BoardsListLayoutContent({
   isEmpty,
   isPending,
   isPendingNextPage,
-  cursorRef,
   hasCursor,
-}: BoardsListProps) {
+  mode,
+  renderList,
+  renderGrid,
+  cursorRef,
+}: BoardsListLayoutContent) {
   return (
     <div>
       {isPending && <div className="text-center py-10">Loading...</div>}
+
+      {mode === "list" && (
+        <div className="flex flex-col gap-2">{renderList()}</div>
+      )}
+
+      {mode === "grid" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {renderGrid()}
+        </div>
+      )}
 
       {!isPending && children}
 
@@ -104,31 +127,24 @@ export function BoardsListLayoutContent({
 
       {hasCursor && (
         <div ref={cursorRef} className="text-center py-8">
-          {isPendingNextPage && "Loading more boards..."}
+          {isPendingNextPage &&
+            {
+              list: (
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-50 w-full" />
+                  <Skeleton className="h-50 w-full" />
+                </div>
+              ),
+              grid: (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Skeleton className="h-50 w-full" />
+                  <Skeleton className="h-50 w-full" />
+                  <Skeleton className="h-50 w-full" />
+                </div>
+              ),
+            }[mode]}
         </div>
       )}
     </div>
   );
-}
-
-type BoardsListCardsLayoutProps = {
-  children: React.ReactNode;
-};
-
-export function BoardsListCardsLayout({
-  children,
-}: BoardsListCardsLayoutProps) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {children}
-    </div>
-  );
-}
-
-type BoardsListListLayoutProps = {
-  children: React.ReactNode;
-};
-
-export function BoardsListListLayout({ children }: BoardsListListLayoutProps) {
-  return <div className="flex flex-col gap-2">{children}</div>;
 }

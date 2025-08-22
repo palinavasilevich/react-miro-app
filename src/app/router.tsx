@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
             path: ROUTES.BOARDS,
             lazy: () => import("@/features/boards-list/boards-list.page"),
           },
+
           {
             path: ROUTES.BOARD,
             lazy: () => import("@/features/board/board.page"),

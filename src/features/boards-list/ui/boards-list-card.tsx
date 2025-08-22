@@ -3,31 +3,23 @@ import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardHeader, CardFooter } from "@/shared/ui/kit/card";
 import type { ApiSchemas } from "@/shared/api/schema";
-import { BoardsFavoriteToggle } from "./boards-favorite-toggle";
 
 type BoardsListCardProps = {
   board: ApiSchemas["Board"];
-  isDeletePending: boolean;
-  isFavorite: boolean;
-  onFavoriteToggle: (board: ApiSchemas["Board"]) => void;
-  onDelete: (boardId: string) => void;
+  rightTopActions?: React.ReactNode;
+  bottomActions?: React.ReactNode;
 };
 
 export function BoardsListCard({
   board,
-  isFavorite,
-  isDeletePending,
-  onFavoriteToggle,
-  onDelete,
+  rightTopActions,
+  bottomActions,
 }: BoardsListCardProps) {
   return (
     <Card className="relative">
-      <div className="absolute top-2 right-2">
-        <BoardsFavoriteToggle
-          isFavorite={isFavorite}
-          onToggle={() => onFavoriteToggle(board)}
-        />
-      </div>
+      {rightTopActions && (
+        <div className="absolute top-2 right-2">{rightTopActions}</div>
+      )}
       <CardHeader>
         <div className="flex flex-col gap-2">
           <Button
@@ -47,15 +39,7 @@ export function BoardsListCard({
           </div>
         </div>
       </CardHeader>
-      <CardFooter>
-        <Button
-          variant="destructive"
-          disabled={isDeletePending}
-          onClick={() => onDelete(board.id)}
-        >
-          Delete
-        </Button>
-      </CardFooter>
+      {bottomActions && <CardFooter>{bottomActions}</CardFooter>}
     </Card>
   );
 }

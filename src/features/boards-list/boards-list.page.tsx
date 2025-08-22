@@ -6,20 +6,19 @@ import { useDebouncedValue } from "@/shared/lib/react";
 import { useCreateBoard } from "./model/use-create-board";
 import { useDeleteBoard } from "./model/use-delete-board";
 import { useUpdateFavoriteBoards } from "./model/use-update-favorite-boards";
-import { PlusIcon } from "lucide-react";
+import { TrashIcon, PlusIcon } from "lucide-react";
 import {
   BoardsListLayout,
   BoardsListLayoutFilters,
   BoardsListLayoutHeader,
   BoardsListLayoutContent,
-  BoardsListListLayout,
-  BoardsListCardsLayout,
 } from "./ui/boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./ui/view-mode-toggle";
 import { useState } from "react";
 import { BoardsSortSelect } from "./ui/boards-sort-select";
 import { BoardsSearchInput } from "./ui/boards-search-input";
 import { BoardsListCard } from "./ui/boards-list-card";
+import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
 
 function BoardsListPage() {
   const boardsFilters = useBoardsFilters();
@@ -77,39 +76,60 @@ function BoardsListPage() {
         hasCursor={boardsQuery.hasNextPage}
         isPendingNextPage={boardsQuery.isFetchingNextPage}
         cursorRef={boardsQuery.cursorRef}
-      >
-        {viewModeValue === "list" ? (
-          <BoardsListListLayout>
-            {boardsQuery.boards.map((board) => (
-              <BoardsListCard
-                key={board.id}
-                board={board}
-                isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                  board,
-                )}
-                onFavoriteToggle={updateFavoriteBoardsMutation.toggle}
-                onDelete={deleteBoardMutation.deleteBoard}
-                isDeletePending={deleteBoardMutation.getIsPending(board.id)}
-              />
-            ))}
-          </BoardsListListLayout>
-        ) : (
-          <BoardsListCardsLayout>
-            {boardsQuery.boards.map((board) => (
-              <BoardsListCard
-                key={board.id}
-                board={board}
-                isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                  board,
-                )}
-                onFavoriteToggle={updateFavoriteBoardsMutation.toggle}
-                onDelete={deleteBoardMutation.deleteBoard}
-                isDeletePending={deleteBoardMutation.getIsPending(board.id)}
-              />
-            ))}
-          </BoardsListCardsLayout>
-        )}
-      </BoardsListLayoutContent>
+        mode={viewModeValue}
+        renderList={() =>
+          boardsQuery.boards.map((board) => (
+            <BoardsListCard
+              key={board.id}
+              board={board}
+              rightTopActions={
+                <BoardsFavoriteToggle
+                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
+                    board,
+                  )}
+                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
+                />
+              }
+              bottomActions={
+                <Button
+                  variant="destructive"
+                  disabled={deleteBoardMutation.getIsPending(board.id)}
+                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
+                >
+                  <TrashIcon />
+                  Delete
+                </Button>
+              }
+            />
+          ))
+        }
+        renderGrid={() =>
+          boardsQuery.boards.map((board) => (
+            <BoardsListCard
+              key={board.id}
+              board={board}
+              rightTopActions={
+                <BoardsFavoriteToggle
+                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
+                    board,
+                  )}
+                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
+                />
+              }
+              bottomActions={
+                <Button
+                  variant="destructive"
+                  disabled={deleteBoardMutation.getIsPending(board.id)}
+                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
+                >
+                  <TrashIcon />
+                  Delete
+                </Button>
+              }
+            />
+          ))
+        }
+      />
     </BoardsListLayout>
   );
 }
