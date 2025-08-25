@@ -19,6 +19,8 @@ import { BoardsSortSelect } from "./ui/boards-sort-select";
 import { BoardsSearchInput } from "./ui/boards-search-input";
 import { BoardsListCard } from "./ui/boards-list-card";
 import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
+import { BoardsListItem } from "./ui/boards-list-item";
+import { DropdownMenuItem } from "@/shared/ui/kit/dropdown-menu";
 
 function BoardsListPage() {
   const boardsFilters = useBoardsFilters();
@@ -79,10 +81,10 @@ function BoardsListPage() {
         mode={viewModeValue}
         renderList={() =>
           boardsQuery.boards.map((board) => (
-            <BoardsListCard
+            <BoardsListItem
               key={board.id}
               board={board}
-              rightTopActions={
+              rightActions={
                 <BoardsFavoriteToggle
                   isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
                     board,
@@ -90,15 +92,15 @@ function BoardsListPage() {
                   onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
                 />
               }
-              bottomActions={
-                <Button
+              menuActions={
+                <DropdownMenuItem
                   variant="destructive"
                   disabled={deleteBoardMutation.getIsPending(board.id)}
                   onClick={() => deleteBoardMutation.deleteBoard(board.id)}
                 >
                   <TrashIcon />
                   Delete
-                </Button>
+                </DropdownMenuItem>
               }
             />
           ))

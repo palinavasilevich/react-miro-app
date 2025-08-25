@@ -25,6 +25,10 @@ function BoardsListFavoritePage() {
   const deleteBoardMutation = useDeleteBoard();
   const updateFavoriteBoardsMutation = useUpdateFavoriteBoards();
 
+  const boards = boardsQuery.boards.filter((board) =>
+    updateFavoriteBoardsMutation.isOptimisticFavorite(board),
+  );
+
   return (
     <BoardsListLayout
       header={
@@ -45,66 +49,56 @@ function BoardsListFavoritePage() {
         cursorRef={boardsQuery.cursorRef}
         mode={viewModeValue}
         renderList={() =>
-          boardsQuery.boards.map(
-            (board) =>
-              updateFavoriteBoardsMutation.isOptimisticFavorite(board) && (
-                <BoardsListCard
-                  key={board.id}
-                  board={board}
-                  rightTopActions={
-                    <BoardsFavoriteToggle
-                      isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                        board,
-                      )}
-                      onToggle={() =>
-                        updateFavoriteBoardsMutation.toggle(board)
-                      }
-                    />
-                  }
-                  bottomActions={
-                    <Button
-                      variant="destructive"
-                      disabled={deleteBoardMutation.getIsPending(board.id)}
-                      onClick={() => deleteBoardMutation.deleteBoard(board.id)}
-                    >
-                      <TrashIcon />
-                      Delete
-                    </Button>
-                  }
+          boards.map((board) => (
+            <BoardsListCard
+              key={board.id}
+              board={board}
+              rightTopActions={
+                <BoardsFavoriteToggle
+                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
+                    board,
+                  )}
+                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
                 />
-              ),
-          )
+              }
+              bottomActions={
+                <Button
+                  variant="destructive"
+                  disabled={deleteBoardMutation.getIsPending(board.id)}
+                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
+                >
+                  <TrashIcon />
+                  Delete
+                </Button>
+              }
+            />
+          ))
         }
         renderGrid={() =>
-          boardsQuery.boards.map(
-            (board) =>
-              updateFavoriteBoardsMutation.isOptimisticFavorite(board) && (
-                <BoardsListCard
-                  key={board.id}
-                  board={board}
-                  rightTopActions={
-                    <BoardsFavoriteToggle
-                      isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                        board,
-                      )}
-                      onToggle={() =>
-                        updateFavoriteBoardsMutation.toggle(board)
-                      }
-                    />
-                  }
-                  bottomActions={
-                    <Button
-                      variant="destructive"
-                      disabled={deleteBoardMutation.getIsPending(board.id)}
-                      onClick={() => deleteBoardMutation.deleteBoard(board.id)}
-                    >
-                      <TrashIcon />
-                      Delete
-                    </Button>
-                  }
+          boards.map((board) => (
+            <BoardsListCard
+              key={board.id}
+              board={board}
+              rightTopActions={
+                <BoardsFavoriteToggle
+                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
+                    board,
+                  )}
+                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
                 />
-              ),
-          )
+              }
+              bottomActions={
+                <Button
+                  variant="destructive"
+                  disabled={deleteBoardMutation.getIsPending(board.id)}
+                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
+                >
+                  <TrashIcon />
+                  Delete
+                </Button>
+              }
+            />
+          ))
         }
       />
     </BoardsListLayout>
