@@ -6,6 +6,7 @@ type BoardsListLayoutProps = {
   filters?: React.ReactNode;
   list?: React.ReactNode;
   children: React.ReactNode;
+  sidebar?: React.ReactNode;
 };
 
 export function BoardsListLayout({
@@ -13,14 +14,19 @@ export function BoardsListLayout({
   filters,
   list,
   children,
+  sidebar,
 }: BoardsListLayoutProps) {
   return (
-    <div className="container mx-auto p-4 flex flex-col gap-6">
-      {header}
-      {filters}
-      {list}
-
-      {children}
+    <div className="container mx-auto">
+      <div className="flex gap-4">
+        {sidebar}
+        <div className="flex-1 p-4 flex flex-col gap-6">
+          {header}
+          {filters}
+          {list}
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
@@ -89,8 +95,8 @@ type BoardsListLayoutContent = {
   isPendingNextPage?: boolean;
   hasCursor?: boolean;
   mode: ViewMode;
-  renderList: () => React.ReactNode;
-  renderGrid: () => React.ReactNode;
+  renderList?: () => React.ReactNode;
+  renderGrid?: () => React.ReactNode;
   cursorRef?: React.RefCallback<HTMLDivElement>;
 };
 
@@ -109,14 +115,12 @@ export function BoardsListLayoutContent({
     <div>
       {isPending && <div className="text-center py-10">Loading...</div>}
 
-      {mode === "list" && (
-        <div className="flex flex-col gap-2">{renderList()}</div>
+      {mode === "list" && renderList && (
+        <BoardsListLayoutList>{renderList?.()}</BoardsListLayoutList>
       )}
 
-      {mode === "grid" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {renderGrid()}
-        </div>
+      {mode === "grid" && renderGrid && (
+        <BoardsListLayoutCards> {renderGrid?.()}</BoardsListLayoutCards>
       )}
 
       {!isPending && children}
@@ -145,6 +149,50 @@ export function BoardsListLayoutContent({
             }[mode]}
         </div>
       )}
+    </div>
+  );
+}
+
+type BoardsListLayoutCardsProps = {
+  children: React.ReactNode;
+};
+
+export function BoardsListLayoutCards({
+  children,
+}: BoardsListLayoutCardsProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {children}
+    </div>
+  );
+}
+
+type BoardsListLayoutListProps = {
+  children: React.ReactNode;
+};
+
+export function BoardsListLayoutList({ children }: BoardsListLayoutListProps) {
+  return <div className="flex flex-col gap-2">{children}</div>;
+}
+
+type BoardsLayoutContentGroupsProps = {
+  groups: {
+    title: string;
+    items: React.ReactNode;
+  }[];
+};
+
+export function BoardsLayoutContentGroups({
+  groups,
+}: BoardsLayoutContentGroupsProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {groups.map((group) => (
+        <div key={group.title}>
+          <p className="text-lg font-bold mb-2">{group.title}</p>
+          {group.items}
+        </div>
+      ))}
     </div>
   );
 }

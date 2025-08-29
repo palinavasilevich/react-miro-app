@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useBoardsList } from "./model/use-boards-list";
 
-import { useDeleteBoard } from "./model/use-delete-board";
-import { useUpdateFavoriteBoards } from "./model/use-update-favorite-boards";
 import {
   BoardsListLayout,
   BoardsListLayoutHeader,
@@ -10,10 +8,9 @@ import {
 } from "./ui/boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./ui/view-mode-toggle";
 
-import { BoardsListCard } from "./ui/boards-list-card";
-import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
-import { Button } from "@/shared/ui/kit/button";
-import { TrashIcon } from "lucide-react";
+import { BoardItem } from "./compose/board-item";
+import { BoardCard } from "./compose/board-card";
+import { BoardsSidebar } from "./ui/boards-sidebar";
 
 function BoardsListFavoritePage() {
   const boardsQuery = useBoardsList({
@@ -22,15 +19,9 @@ function BoardsListFavoritePage() {
 
   const [viewModeValue, setViewModeValue] = useState<ViewMode>("list");
 
-  const deleteBoardMutation = useDeleteBoard();
-  const updateFavoriteBoardsMutation = useUpdateFavoriteBoards();
-
-  const boards = boardsQuery.boards.filter((board) =>
-    updateFavoriteBoardsMutation.isOptimisticFavorite(board),
-  );
-
   return (
     <BoardsListLayout
+      sidebar={<BoardsSidebar />}
       header={
         <BoardsListLayoutHeader
           title="Favorite Boards"
@@ -49,55 +40,13 @@ function BoardsListFavoritePage() {
         cursorRef={boardsQuery.cursorRef}
         mode={viewModeValue}
         renderList={() =>
-          boards.map((board) => (
-            <BoardsListCard
-              key={board.id}
-              board={board}
-              rightTopActions={
-                <BoardsFavoriteToggle
-                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                    board,
-                  )}
-                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
-                />
-              }
-              bottomActions={
-                <Button
-                  variant="destructive"
-                  disabled={deleteBoardMutation.getIsPending(board.id)}
-                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
-                >
-                  <TrashIcon />
-                  Delete
-                </Button>
-              }
-            />
+          boardsQuery.boards.map((board) => (
+            <BoardItem key={board.id} board={board} />
           ))
         }
         renderGrid={() =>
-          boards.map((board) => (
-            <BoardsListCard
-              key={board.id}
-              board={board}
-              rightTopActions={
-                <BoardsFavoriteToggle
-                  isFavorite={updateFavoriteBoardsMutation.isOptimisticFavorite(
-                    board,
-                  )}
-                  onToggle={() => updateFavoriteBoardsMutation.toggle(board)}
-                />
-              }
-              bottomActions={
-                <Button
-                  variant="destructive"
-                  disabled={deleteBoardMutation.getIsPending(board.id)}
-                  onClick={() => deleteBoardMutation.deleteBoard(board.id)}
-                >
-                  <TrashIcon />
-                  Delete
-                </Button>
-              }
-            />
+          boardsQuery.boards.map((board) => (
+            <BoardCard key={board.id} board={board} />
           ))
         }
       />

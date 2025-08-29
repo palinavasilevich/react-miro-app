@@ -83,10 +83,16 @@ function generateRandomBoards(count: number): ApiSchemas["Board"][] {
   for (let i = 0; i < count; i++) {
     const createdAt = randomDate();
     const updatedAt = new Date(
-      new Date(createdAt).getTime() + Math.random() * 86400000 * 10,
-    ).toISOString(); // Добавляем до 10 дней
+      Math.min(
+        new Date(createdAt).getTime() + Math.random() * 86400000 * 10,
+        new Date(createdAt).getTime(),
+      ),
+    ).toISOString();
     const lastOpenedAt = new Date(
-      new Date(updatedAt).getTime() + Math.random() * 86400000 * 5,
+      Math.min(
+        new Date(updatedAt).getTime() + Math.random() * 86400000 * 5,
+        new Date(updatedAt).getTime(),
+      ),
     ).toISOString(); // Добавляем до 5 дней
 
     result.push({
