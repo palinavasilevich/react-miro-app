@@ -1,17 +1,52 @@
-import { type PathParams, ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { ArrowRightIcon, StickerIcon } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+
+type NodeBase = {
+  id: string;
+  type: string;
+};
+
+type StickerNode = NodeBase & {
+  type: "sticker";
+  text: string;
+  x: number;
+  y: number;
+};
+
+type Node = StickerNode;
+
+function useNodes() {
+  const [nodes] = useState<Node[]>([
+    {
+      id: "1",
+      type: "sticker",
+      text: "Hello 1",
+      x: 100,
+      y: 100,
+    },
+    {
+      id: "2",
+      type: "sticker",
+      text: "Hello 2",
+      x: 200,
+      y: 200,
+    },
+  ]);
+
+  return { nodes };
+}
 
 function BoardPage() {
-  const params = useParams<PathParams[typeof ROUTES.BOARD]>();
+  const { nodes } = useNodes();
 
   return (
     <Layout>
       <Dots />
       <Canvas>
-        <Sticker text="Hello" x={100} y={100} />
-        <Sticker text="Hello" x={200} y={200} />
+        {nodes.map((node) => (
+          <Sticker key={node.id} text={node.text} x={node.x} y={node.y} />
+        ))}
       </Canvas>
 
       <Actions>
