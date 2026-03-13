@@ -12,7 +12,7 @@ function LoginPage() {
       footerText={
         <>
           Don't have an account yet?{" "}
-          <Link to={ROUTES.REGISTER} className="hover:text-muted-foreground">
+          <Link to={ROUTES.REGISTER} className="hover:text-chart-5">
             Sign up
           </Link>
         </>
