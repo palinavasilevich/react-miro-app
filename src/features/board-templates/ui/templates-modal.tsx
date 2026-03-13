@@ -6,10 +6,15 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/shared/ui/kit/dialog";
-import { TemplatesGallery } from "./templates-gallery";
+import { Template, TemplatesGallery } from "./templates-gallery";
 
 export function TemplatesModal() {
   const { isOpen, close } = useTemplatesModal();
+
+  const handleSelect = (template: Template) => {
+    console.log("Selected template", template);
+    close();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
@@ -20,7 +25,12 @@ export function TemplatesModal() {
             Select a template to create a new board
           </DialogDescription>
         </DialogHeader>
-        <TemplatesGallery className="h-[60vh] pr-4" />
+
+        <TemplatesGallery
+          onSelect={handleSelect}
+          variant={"grid"}
+          className="h-[60vh] pr-4"
+        />
       </DialogContent>
     </Dialog>
   );

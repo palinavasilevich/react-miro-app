@@ -22,7 +22,7 @@ export function BoardsListLayout({
     <div className="container mx-auto">
       <div className="flex gap-4">
         {sidebar}
-        <div className="flex-1 p-4 flex flex-col gap-6">
+        <div className="flex-1 min-w-0 p-4 flex flex-col gap-6">
           {templates && (
             <div className="rounded-md bg-gray-100 p-4">{templates}</div>
           )}
