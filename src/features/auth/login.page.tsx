@@ -11,7 +11,10 @@ function LoginPage() {
       form={<LoginForm />}
       footerText={
         <>
-          Don't have an account yet? <Link to={ROUTES.REGISTER}>Sign up</Link>
+          Don't have an account yet?{" "}
+          <Link to={ROUTES.REGISTER} className="hover:text-muted-foreground">
+            Sign up
+          </Link>
         </>
       }
     ></AuthLayout>

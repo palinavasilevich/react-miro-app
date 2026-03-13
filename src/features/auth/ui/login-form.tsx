@@ -1,22 +1,23 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/ui/kit/form";
+
+import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useLogin } from "../model/use-login";
 
 const loginSchema = z.object({
-  email: z.string("Email is required").email("Invalid email"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .pipe(z.email("Enter a valid email address")),
+
   password: z
-    .string("Password is required")
+    .string()
+    .trim()
+    .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters long"),
 });
 
@@ -37,44 +38,50 @@ export function LoginForm() {
   }
 
   return (
-    <Form {...form}>
-      <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="admin@gmail.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {errorMessage && (
-          <p className="text-destructive text-sm">{errorMessage}</p>
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      <Controller
+        name="email"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              {...field}
+              id="email"
+              aria-invalid={fieldState.invalid}
+              type="email"
+              placeholder="admin@gmail.com"
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
         )}
+      />
 
-        <Button type="submit" disabled={isPending}>
-          Login
-        </Button>
-      </form>
-    </Form>
+      <Controller
+        name="password"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              {...field}
+              id="password"
+              aria-invalid={fieldState.invalid}
+              type="password"
+              placeholder="********"
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      {errorMessage && (
+        <p className="text-destructive text-sm">{errorMessage}</p>
+      )}
+
+      <Button type="submit" disabled={isPending} className="cursor-pointer">
+        Login
+      </Button>
+    </form>
   );
 }

@@ -1,17 +1,11 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/ui/kit/form";
+
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useRegister } from "../model/use-register";
+import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 
 const registerSchema = z
   .object({
@@ -40,58 +34,65 @@ export function RegisterForm() {
   const onSubmit = form.handleSubmit((data) => register(data));
 
   return (
-    <Form {...form}>
-      <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="admin@gmail.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {errorMessage && (
-          <p className="text-destructive text-sm">{errorMessage}</p>
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      <Controller
+        name="email"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              {...field}
+              id="email"
+              aria-invalid={fieldState.invalid}
+              type="email"
+              placeholder="admin@gmail.com"
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
         )}
+      />
+      <Controller
+        name="password"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              {...field}
+              id="password"
+              aria-invalid={fieldState.invalid}
+              type="password"
+              placeholder="********"
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
 
-        <Button type="submit" disabled={isPending}>
-          Sign Up
-        </Button>
-      </form>
-    </Form>
+      <Controller
+        name="confirmPassword"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+            <Input
+              {...field}
+              id="confirmPassword"
+              aria-invalid={fieldState.invalid}
+              type="password"
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      {errorMessage && (
+        <p className="text-destructive text-sm">{errorMessage}</p>
+      )}
+      <Button type="submit" disabled={isPending} className="cursor-pointer">
+        Sign Up
+      </Button>
+    </form>
   );
 }

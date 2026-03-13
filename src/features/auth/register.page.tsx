@@ -11,7 +11,10 @@ function RegisterPage() {
       form={<RegisterForm />}
       footerText={
         <>
-          Do you already have an account? <Link to={ROUTES.LOGIN}>Sign in</Link>
+          Do you already have an account?{" "}
+          <Link to={ROUTES.LOGIN} className="hover:text-muted-foreground">
+            Sign in
+          </Link>
         </>
       }
     />
