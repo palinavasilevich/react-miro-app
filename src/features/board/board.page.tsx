@@ -17,7 +17,7 @@ type StickerNode = NodeBase & {
 type Node = StickerNode;
 
 function useNodes() {
-  const [nodes] = useState<Node[]>([
+  const [nodes, setNodes] = useState<Node[]>([
     {
       id: "1",
       type: "sticker",
@@ -34,7 +34,16 @@ function useNodes() {
     },
   ]);
 
-  return { nodes };
+  const addSticker = (data: { text: string; x: number; y: number }) => {
+    const newNode: Node = {
+      id: crypto.randomUUID(),
+      type: "sticker",
+      ...data,
+    };
+    setNodes((prevNodes) => [...prevNodes, newNode]);
+  };
+
+  return { nodes, addSticker };
 }
 
 function BoardPage() {
