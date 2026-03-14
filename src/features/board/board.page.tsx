@@ -1,17 +1,30 @@
+import { Ref } from "react";
 import { Button } from "@/shared/ui/kit/button";
 import { ArrowRightIcon, StickerIcon } from "lucide-react";
 import { useNodes } from "./model/use-nodes";
 import { useBoardViewState } from "./model/use-board-view-state";
-import { Ref } from "react";
-import { useCanvasRect } from "./model/use-сanvas-rect";
+import { useCanvasRect } from "./model/use-canvas-rect";
 
 function BoardPage() {
   const { nodes, addSticker } = useNodes();
   const { viewState, goToAddSticker, goToIdle } = useBoardViewState();
   const { canvasRef, canvasRect } = useCanvasRect();
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (viewState.type === "add-sticker") {
+      if (e.key === "Escape") {
+        goToIdle();
+      }
+    }
+    if (viewState.type === "idle") {
+      if (e.key === "s") {
+        goToAddSticker();
+      }
+    }
+  };
+
   return (
-    <Layout>
+    <Layout onKeyDown={handleKeyDown}>
       <Dots />
       <Canvas
         ref={canvasRef}
@@ -55,9 +68,12 @@ function BoardPage() {
 
 export const Component = BoardPage;
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout({
+  children,
+  ...props
+}: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="grow relative" tabIndex={0}>
+    <div className="grow relative" tabIndex={0} {...props}>
       {children}
     </div>
   );
