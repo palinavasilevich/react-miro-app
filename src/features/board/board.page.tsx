@@ -4,14 +4,17 @@ import { ArrowRightIcon, StickerIcon } from "lucide-react";
 import { useNodes } from "./model/use-nodes";
 import { useBoardViewState } from "./model/use-board-view-state";
 import { useCanvasRect } from "./model/use-canvas-rect";
+import { useLayoutFocus } from "./model/use-layout-focus";
 
 function BoardPage() {
   const { nodes, addSticker } = useNodes();
   const { viewState, goToAddSticker, goToIdle } = useBoardViewState();
+  const focusLayoutRef = useLayoutFocus();
   const { canvasRef, canvasRect } = useCanvasRect();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (viewState.type === "add-sticker") {
+      console.log(e.key);
       if (e.key === "Escape") {
         goToIdle();
       }
@@ -24,7 +27,7 @@ function BoardPage() {
   };
 
   return (
-    <Layout onKeyDown={handleKeyDown}>
+    <Layout onKeyDown={handleKeyDown} ref={focusLayoutRef}>
       <Dots />
       <Canvas
         ref={canvasRef}
@@ -70,10 +73,14 @@ export const Component = BoardPage;
 
 function Layout({
   children,
+  ref,
   ...props
-}: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  children: React.ReactNode;
+  ref: Ref<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="grow relative" tabIndex={0} {...props}>
+    <div className="grow relative" tabIndex={0} ref={ref} {...props}>
       {children}
     </div>
   );
