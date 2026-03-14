@@ -2,15 +2,30 @@ import { Button } from "@/shared/ui/kit/button";
 import { ArrowRightIcon, StickerIcon } from "lucide-react";
 import { useNodes } from "./model/use-nodes";
 import { useBoardViewState } from "./model/use-board-view-state";
+import { Ref } from "react";
+import { useCanvasRect } from "./model/use-сanvas-rect";
 
 function BoardPage() {
   const { nodes, addSticker } = useNodes();
   const { viewState, goToAddSticker, goToIdle } = useBoardViewState();
+  const { canvasRef, canvasRect } = useCanvasRect();
 
   return (
     <Layout>
       <Dots />
-      <Canvas>
+      <Canvas
+        ref={canvasRef}
+        onClick={(e) => {
+          if (viewState.type === "add-sticker" && canvasRect) {
+            addSticker({
+              text: "Default",
+              x: e.clientX - canvasRect.x,
+              y: e.clientY - canvasRect.y,
+            });
+            goToIdle();
+          }
+        }}
+      >
         {nodes.map((node) => (
           <Sticker key={node.id} text={node.text} x={node.x} y={node.y} />
         ))}
@@ -56,10 +71,14 @@ function Dots() {
 
 function Canvas({
   children,
+  ref,
   ...props
-}: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  children: React.ReactNode;
+  ref: Ref<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div {...props} className="absolute inset-0">
+    <div ref={ref} {...props} className="absolute inset-0">
       {children}
     </div>
   );
