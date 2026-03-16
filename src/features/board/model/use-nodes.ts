@@ -12,7 +12,7 @@ type StickerNode = NodeBase & {
   y: number;
 };
 
-type Node = StickerNode;
+export type Node = StickerNode;
 
 export function useNodes() {
   const [nodes, setNodes] = useState<Node[]>([
