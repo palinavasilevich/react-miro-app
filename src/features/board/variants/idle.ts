@@ -1,6 +1,6 @@
 import { IdleViewState } from "../model/use-view-state";
 import { ViewModelParams } from "../types/view-model-params";
-import { ViewModel } from "../view-model/use-view-model";
+import { ViewModel } from "../types/view-model-type";
 
 export function useIdleViewModel({
   nodesModel,
@@ -23,6 +23,11 @@ export function useIdleViewModel({
         if (e.key === "s") {
           viewStateModel.goToAddSticker();
         }
+      },
+    },
+    overlay: {
+      onClick: () => {
+        viewStateModel.selection([], "replace");
       },
     },
     actions: {
