@@ -12,7 +12,7 @@ type StickerNode = NodeBase & {
   y: number;
 };
 
-export type Node = StickerNode;
+type Node = StickerNode;
 
 export function useNodes() {
   const [nodes, setNodes] = useState<Node[]>([
@@ -43,3 +43,5 @@ export function useNodes() {
 
   return { nodes, addSticker };
 }
+
+export type NodesModel = ReturnType<typeof useNodes>;
