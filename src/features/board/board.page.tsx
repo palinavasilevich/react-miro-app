@@ -1,8 +1,8 @@
 import { useNodes } from "./model/use-nodes";
-import { useViewState } from "./model/use-view-state";
 import { useCanvasRect } from "./hooks/use-canvas-rect";
 import { useLayoutFocus } from "./hooks/use-layout-focus";
 import { useViewModel } from "./view-model/use-view-model";
+import { useWindowEvents } from "./hooks/use-window-events";
 import {
   ActionButton,
   Actions,
@@ -10,6 +10,7 @@ import {
   Dots,
   Layout,
   Overlay,
+  SelectionWindow,
   Sticker,
 } from "./ui";
 
@@ -17,11 +18,12 @@ import { ArrowRightIcon, StickerIcon } from "lucide-react";
 
 function BoardPage() {
   const nodesModel = useNodes();
-  const viewStateModel = useViewState();
   const focusLayoutRef = useLayoutFocus();
   const { canvasRef, canvasRect } = useCanvasRect();
 
-  const viewModel = useViewModel({ viewStateModel, nodesModel, canvasRect });
+  const viewModel = useViewModel({ nodesModel, canvasRect });
+
+  useWindowEvents(viewModel);
 
   return (
     <Layout ref={focusLayoutRef} onKeyDown={viewModel.layout?.onKeyDown}>
@@ -44,7 +46,9 @@ function BoardPage() {
           />
         ))}
       </Canvas>
-
+      {viewModel.selectionWindow && (
+        <SelectionWindow {...viewModel.selectionWindow} />
+      )}
       <Actions>
         <ActionButton
           isActive={viewModel.actions?.addSticker?.isActive}
