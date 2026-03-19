@@ -1,8 +1,10 @@
+import { distanceFromPoints } from "../domain/point";
 import { pointOnScreenToCanvas } from "../domain/screen-to-canvas";
 import { SelectionModifications, selectItems } from "../domain/selection";
 import { ViewModelParams } from "../types/view-model-params";
 import { ViewModel } from "../types/view-model-type";
 import { goToAddSticker } from "./add-sticker";
+import { goToSelectionWindow } from "./selection-window";
 
 export type IdleViewState = {
   type: "idle";
@@ -30,12 +32,6 @@ export function useIdleViewModel({
   };
 
   return (idleState: IdleViewState): ViewModel => ({
-    selectionWindow: {
-      x: 100,
-      y: 100,
-      width: 1000,
-      height: 100,
-    },
     nodes: nodesModel.nodes.map((node) => ({
       ...node,
       isSelected: idleState.selectedIds.has(node.id),
@@ -59,8 +55,6 @@ export function useIdleViewModel({
         select(idleState, [], "replace");
       },
       onMouseDown: (e) => {
-        if (!canvasRect) return;
-
         setViewState({
           ...idleState,
           mouseDown: pointOnScreenToCanvas(
@@ -73,12 +67,27 @@ export function useIdleViewModel({
         });
       },
     },
+
     window: {
       onMouseMove: (e) => {
         if (idleState.mouseDown) {
-          console.log(idleState);
+          const currentPoint = pointOnScreenToCanvas(
+            {
+              x: e.clientX,
+              y: e.clientY,
+            },
+            canvasRect,
+          );
+
+          if (distanceFromPoints(idleState.mouseDown, currentPoint) > 5) {
+            setViewState(
+              goToSelectionWindow({
+                startPoint: idleState.mouseDown,
+                endPoint: currentPoint,
+              }),
+            );
+          }
         }
-        // console.log("onMouseMove", e);
       },
       onMouseUp: (e) => {
         console.log("onMouseUp", e);

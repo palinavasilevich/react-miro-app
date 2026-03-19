@@ -36,38 +36,38 @@ const templates: Template[] = [
   },
 
   {
-    id: "1",
+    id: "5",
     name: "Template 1",
     description: "Template 1 description",
     thumbnail: "https://placehold.co/150",
   },
   {
-    id: "2",
+    id: "6",
     name: "Template 2",
     description: "Template 2 description",
     thumbnail: "https://placehold.co/150",
   },
   {
-    id: "3",
+    id: "7",
     name: "Template 3",
     description: "Template 3 description",
     thumbnail: "https://placehold.co/150",
   },
   {
-    id: "4",
+    id: "8",
     name: "Template 4",
     description: "Template 4 description",
     thumbnail: "https://placehold.co/150",
   },
 
   {
-    id: "3",
+    id: "9",
     name: "Template 3",
     description: "Template 3 description",
     thumbnail: "https://placehold.co/150",
   },
   {
-    id: "4",
+    id: "10",
     name: "Template 4",
     description: "Template 4 description",
     thumbnail: "https://placehold.co/150",
