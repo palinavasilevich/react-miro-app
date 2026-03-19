@@ -1,6 +1,6 @@
-import { ViewModelParams } from "../types/view-model-params";
-import { ViewModel } from "../types/view-model-type";
 import { goToIdle } from "./idle";
+import { ViewModelParams } from "../view-model-params";
+import { ViewModel } from "../view-model-type";
 
 export type AddStickerViewState = {
   type: "add-sticker";
@@ -8,8 +8,8 @@ export type AddStickerViewState = {
 
 export function useAddStickerViewModel({
   nodesModel,
-  canvasRect,
   setViewState,
+  canvasRect,
 }: ViewModelParams) {
   return (): ViewModel => ({
     nodes: nodesModel.nodes,

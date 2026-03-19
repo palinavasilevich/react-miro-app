@@ -1,8 +1,9 @@
-import { Point } from "../domain/point";
-import { createRectFromPoints } from "../domain/rect";
-import { pointOnScreenToCanvas } from "../domain/screen-to-canvas";
-import { ViewModelParams } from "../types/view-model-params";
-import { ViewModel } from "../types/view-model-type";
+import { Point } from "../../domain/point";
+import { createRectFromPoints, isPointInRect } from "../../domain/rect";
+import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import { selectItems } from "../../domain/selection";
+import { ViewModelParams } from "../view-model-params";
+import { ViewModel } from "../view-model-type";
 import { goToIdle } from "./idle";
 
 export type SelectionWindowViewState = {
@@ -14,15 +15,18 @@ export type SelectionWindowViewState = {
 
 export function useSelectionWindowViewModel({
   nodesModel,
-  canvasRect,
   setViewState,
+  canvasRect,
 }: ViewModelParams) {
   return (state: SelectionWindowViewState): ViewModel => {
     const rect = createRectFromPoints(state.startPoint, state.endPoint);
-
     return {
       selectionWindow: rect,
-      nodes: nodesModel.nodes,
+      nodes: nodesModel.nodes.map((node) => ({
+        ...node,
+        isSelected:
+          isPointInRect(node, rect) || state.initialSelectedIds.has(node.id),
+      })),
       window: {
         onMouseMove: (e) => {
           const currentPoint = pointOnScreenToCanvas(
@@ -32,11 +36,25 @@ export function useSelectionWindowViewModel({
             },
             canvasRect,
           );
-
-          setViewState({ ...state, endPoint: currentPoint });
+          setViewState({
+            ...state,
+            endPoint: currentPoint,
+          });
         },
         onMouseUp: () => {
-          setViewState(goToIdle());
+          const nodesIdsInRect = nodesModel.nodes
+            .filter((node) => isPointInRect(node, rect))
+            .map((node) => node.id);
+
+          setViewState(
+            goToIdle({
+              selectedIds: selectItems(
+                state.initialSelectedIds,
+                nodesIdsInRect,
+                "add",
+              ),
+            }),
+          );
         },
       },
     };
@@ -44,8 +62,8 @@ export function useSelectionWindowViewModel({
 }
 
 export function goToSelectionWindow({
-  startPoint,
   endPoint,
+  startPoint,
   initialSelectedIds,
 }: {
   startPoint: { x: number; y: number };

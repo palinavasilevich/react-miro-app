@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { ViewModel } from "../types/view-model-type";
+import { ViewModel } from "../view-model/view-model-type";
 
 export function useWindowEvents(viewModel: ViewModel) {
   const viewModelRef = useRef(viewModel);

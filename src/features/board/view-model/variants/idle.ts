@@ -1,8 +1,13 @@
-import { distanceFromPoints } from "../domain/point";
-import { pointOnScreenToCanvas } from "../domain/screen-to-canvas";
-import { SelectionModifications, selectItems } from "../domain/selection";
-import { ViewModelParams } from "../types/view-model-params";
-import { ViewModel } from "../types/view-model-type";
+import { distanceFromPoints } from "../../domain/point";
+import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import {
+  SelectionType,
+  SelectionModifications,
+  selectItems,
+} from "../../domain/selection";
+
+import { ViewModelParams } from "../view-model-params";
+import { ViewModel } from "../view-model-type";
 import { goToAddSticker } from "./add-sticker";
 import { goToSelectionWindow } from "./selection-window";
 
@@ -17,8 +22,8 @@ export type IdleViewState = {
 
 export function useIdleViewModel({
   nodesModel,
-  canvasRect,
   setViewState,
+  canvasRect,
 }: ViewModelParams) {
   const select = (
     lastState: IdleViewState,
@@ -51,9 +56,6 @@ export function useIdleViewModel({
       },
     },
     overlay: {
-      onClick: () => {
-        select(idleState, [], "replace");
-      },
       onMouseDown: (e) => {
         setViewState({
           ...idleState,
@@ -66,8 +68,15 @@ export function useIdleViewModel({
           ),
         });
       },
+      onMouseUp: () => {
+        if (idleState.mouseDown) {
+          setViewState({
+            ...idleState,
+            selectedIds: selectItems(idleState.selectedIds, [], "replace"),
+          });
+        }
+      },
     },
-
     window: {
       onMouseMove: (e) => {
         if (idleState.mouseDown) {
@@ -84,13 +93,19 @@ export function useIdleViewModel({
               goToSelectionWindow({
                 startPoint: idleState.mouseDown,
                 endPoint: currentPoint,
+                initialSelectedIds: e.shiftKey
+                  ? idleState.selectedIds
+                  : undefined,
               }),
             );
           }
         }
       },
-      onMouseUp: (e) => {
-        console.log("onMouseUp", e);
+      onMouseUp: () => {
+        setViewState({
+          ...idleState,
+          mouseDown: undefined,
+        });
       },
     },
     actions: {
@@ -104,9 +119,11 @@ export function useIdleViewModel({
   });
 }
 
-export function goToIdle(): IdleViewState {
+export function goToIdle({
+  selectedIds,
+}: { selectedIds?: SelectionType } = {}): IdleViewState {
   return {
     type: "idle",
-    selectedIds: new Set(),
+    selectedIds: selectedIds ?? new Set(),
   };
 }
