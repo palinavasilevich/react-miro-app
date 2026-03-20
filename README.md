@@ -42,11 +42,13 @@ Built with a strong emphasis on **modularity and scalability**, the project uses
 
 The project is built using **Feature-Sliced Design (FSD)**:
 
+```
 src/
 ├── app/          # app initialization, providers
 ├── features/   # user actions (create board, edit, etc.)
 ├── lib/        # helper functions, services, API utilities
 ├── shared/     # reusable components, UI blocks, and utilities
+```
 
 ### Why this matters:
 
