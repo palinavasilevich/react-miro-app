@@ -15,11 +15,13 @@ import {
 } from "./ui";
 
 import { ArrowRightIcon, StickerIcon } from "lucide-react";
+import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
 
 function BoardPage() {
   const nodesModel = useNodes();
   const focusLayoutRef = useLayoutFocus();
   const { canvasRef, canvasRect } = useCanvasRect();
+  const { nodeRef } = useNodesDimensions();
 
   const viewModel = useViewModel({ nodesModel, canvasRect });
 
@@ -37,10 +39,12 @@ function BoardPage() {
 
         {viewModel.nodes.map((node) => (
           <Sticker
+            id={node.id}
             key={node.id}
             text={node.text}
             x={node.x}
             y={node.y}
+            ref={nodeRef}
             selected={node.isSelected}
             onClick={node.onClick}
           />
