@@ -8,7 +8,9 @@ export type NodeDimensions = {
 export type NodesDimensionsMap = Record<string, NodeDimensions>;
 
 export const useNodesDimensions = () => {
-  const [nodesDimensions, setNodesDimensions] = useState({});
+  const [nodesDimensions, setNodesDimensions] = useState<NodesDimensionsMap>(
+    {},
+  );
 
   const resizeObserverRef = useRef<ResizeObserver | undefined>(undefined);
 
@@ -38,8 +40,12 @@ export const useNodesDimensions = () => {
 
     if (el) {
       resizeObserver.observe(el);
-
       return () => {
+        setNodesDimensions((prev) => {
+          const newNodesDimensions = { ...prev };
+          delete newNodesDimensions[(el as HTMLElement).dataset.id ?? ""];
+          return newNodesDimensions;
+        });
         resizeObserver.unobserve(el);
       };
     }

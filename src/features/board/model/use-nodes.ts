@@ -38,10 +38,15 @@ export function useNodes() {
       type: "sticker",
       ...data,
     };
+
     setNodes((prevNodes) => [...prevNodes, newNode]);
   };
 
-  return { nodes, addSticker };
+  const deleteNodes = (ids: string[]) => {
+    setNodes((prevNodes) => prevNodes.filter((node) => !ids.includes(node.id)));
+  };
+
+  return { nodes, addSticker, deleteNodes };
 }
 
 export type NodesModel = ReturnType<typeof useNodes>;
