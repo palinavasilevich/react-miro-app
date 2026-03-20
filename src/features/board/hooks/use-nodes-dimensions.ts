@@ -22,8 +22,8 @@ export const useNodesDimensions = () => {
             .map((entry) => [
               (entry.target as HTMLElement).dataset.id,
               {
-                width: entry.contentRect.width,
-                height: entry.contentRect.height,
+                width: entry.borderBoxSize[0].inlineSize,
+                height: entry.borderBoxSize[0].blockSize,
               },
             ])
             .filter((entry) => !!entry[0]),
@@ -59,8 +59,6 @@ export const useNodesDimensions = () => {
     },
     [],
   );
-
-  console.log(nodesDimensions);
 
   return { nodeRef, nodesDimensions };
 };

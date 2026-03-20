@@ -21,9 +21,9 @@ function BoardPage() {
   const nodesModel = useNodes();
   const focusLayoutRef = useLayoutFocus();
   const { canvasRef, canvasRect } = useCanvasRect();
-  const { nodeRef } = useNodesDimensions();
+  const { nodeRef, nodesDimensions } = useNodesDimensions();
 
-  const viewModel = useViewModel({ nodesModel, canvasRect });
+  const viewModel = useViewModel({ nodesModel, canvasRect, nodesDimensions });
 
   useWindowEvents(viewModel);
 
