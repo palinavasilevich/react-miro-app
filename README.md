@@ -1,69 +1,68 @@
-# React + TypeScript + Vite
+# 🧩 Miro Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Miro-inspired boards application for creating and managing interactive workspaces.  
+The project focuses on scalable frontend architecture, reusable UI components, and clean separation of concerns.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Overview
 
-## Expanding the ESLint configuration
+This application allows users to work with boards, visualize content, and interact with elements in a flexible and intuitive interface.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Built with a strong emphasis on **modularity and scalability**, the project uses Feature-Sliced Design (FSD) to organize code by business logic rather than technical layers.
 
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## ⚙️ Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+- 📋 **Board content rendering**  
+  Display cards, notes, and other board elements with support for different view modes (grid / list)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- ➕ **Create new boards**  
+  Users can create boards via UI with proper state initialization and rendering
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+- 🔄 **User interactions**  
+  Select, edit, and delete board elements
 
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+- 🧠 **UI state management**  
+  Handle selection, view modes, and UI-driven state
+
+- 🧩 **Component composition**  
+  Flexible layout system using reusable UI blocks (header, sidebar, filters, list)
+
+- 🔗 **API integration**  
+  Ability to sync external data (e.g., GitHub issues → board cards)
+
+- ⚡ **Async operations**  
+  Full CRUD support with loading and state handling
+
+---
+
+## 🏗 Architecture
+
+The project is built using **Feature-Sliced Design (FSD)**:
+
+src/
+├── app/          # app initialization, providers
+├── features/   # user actions (create board, edit, etc.)
+├── lib/        # helper functions, services, API utilities
+├── shared/     # reusable components, UI blocks, and utilities
+
+### Why this matters:
+
+- 📦 Clear separation of responsibilities  
+- 🔁 High reusability of components  
+- 📈 Easy scalability for new features  
+- 🧠 Better maintainability of large codebases  
+
+---
+
+## 🛠 Tech Stack
+
+- React
+- TypeScript
+- Tailwind CSS 
+- Zustand
+- React Hook Form
+- Zod
+- TanStack React Query
