@@ -1,16 +1,13 @@
-import { distanceFromPoints } from "../../domain/point";
-import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
-import {
-  SelectionType,
-  SelectionModifications,
-  selectItems,
-} from "../../domain/selection";
+import { distanceFromPoints } from "../../../domain/point";
+import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
+import { SelectionType, selectItems } from "../../../domain/selection";
 
-import { ViewModelParams } from "../view-model-params";
-import { ViewModel } from "../view-model-type";
-import { goToAddSticker } from "./add-sticker";
-import { goToEditSticker } from "./edit-sticker";
-import { goToSelectionWindow } from "./selection-window";
+import { ViewModelParams } from "../../view-model-params";
+import { ViewModel } from "../../view-model-type";
+import { goToAddSticker } from "../add-sticker";
+import { goToEditSticker } from "../edit-sticker";
+import { goToSelectionWindow } from "../selection-window";
+import { useSelection } from "./use-selection";
 
 export type IdleViewState = {
   type: "idle";
@@ -21,21 +18,10 @@ export type IdleViewState = {
   };
 };
 
-export function useIdleViewModel({
-  nodesModel,
-  setViewState,
-  canvasRect,
-}: ViewModelParams) {
-  const select = (
-    lastState: IdleViewState,
-    ids: string[],
-    modification: SelectionModifications,
-  ) => {
-    setViewState({
-      ...lastState,
-      selectedIds: selectItems(lastState.selectedIds, ids, modification),
-    });
-  };
+export function useIdleViewModel(params: ViewModelParams) {
+  const { nodesModel, setViewState, canvasRect } = params;
+
+  const selection = useSelection(params);
 
   const deleteSelected = (viewState: IdleViewState) => {
     if (viewState.selectedIds.size > 0) {
@@ -65,11 +51,7 @@ export function useIdleViewModel({
           return;
         }
 
-        if (e.ctrlKey || e.shiftKey) {
-          select(idleState, [node.id], "toggle");
-        } else {
-          select(idleState, [node.id], "replace");
-        }
+        selection.handleNodeClick(idleState, node.id, e);
       },
     })),
     layout: {
