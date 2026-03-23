@@ -4,9 +4,9 @@ import { SelectionType } from "../../../domain/selection";
 
 import { ViewModelParams } from "../../view-model-params";
 import { ViewModel } from "../../view-model-type";
-import { goToAddSticker } from "../add-sticker";
 import { goToSelectionWindow } from "../selection-window";
 import { useDeleteSelected } from "./use-delete-selected";
+import { useGoToAddSticker } from "./use-go-to-add-sticker";
 import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useSelection } from "./use-selection";
 
@@ -25,6 +25,7 @@ export function useIdleViewModel(params: ViewModelParams) {
   const selection = useSelection(params);
   const deleteSelected = useDeleteSelected(params);
   const goToEditSticker = useGoToEditSticker(params);
+  const goToAddSticker = useGoToAddSticker(params);
 
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
@@ -48,10 +49,7 @@ export function useIdleViewModel(params: ViewModelParams) {
         if (keyDownResult.preventNext) return;
 
         deleteSelected.handleKeyDown(idleState, e);
-
-        if (e.key === "s") {
-          setViewState(goToAddSticker());
-        }
+        goToAddSticker.handleKeyDown(e);
       },
     },
     overlay: {
@@ -103,9 +101,7 @@ export function useIdleViewModel(params: ViewModelParams) {
     actions: {
       addSticker: {
         isActive: false,
-        onClick: () => {
-          setViewState(goToAddSticker());
-        },
+        onClick: goToAddSticker.handleActionClick,
       },
     },
   });
@@ -118,12 +114,4 @@ export function goToIdle({
     type: "idle",
     selectedIds: selectedIds ?? new Set(),
   };
-}
-
-export function useGoToAddSticker({ setViewState }: ViewModelParams) {
-  const handleNodeClick = (
-    idleState: IdleViewState,
-    nodeId: string,
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {};
 }
