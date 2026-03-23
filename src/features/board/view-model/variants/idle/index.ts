@@ -5,9 +5,9 @@ import { SelectionType } from "../../../domain/selection";
 import { ViewModelParams } from "../../view-model-params";
 import { ViewModel } from "../../view-model-type";
 import { goToAddSticker } from "../add-sticker";
-import { goToEditSticker } from "../edit-sticker";
 import { goToSelectionWindow } from "../selection-window";
 import { useDeleteSelected } from "./use-delete-selected";
+import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useSelection } from "./use-selection";
 
 export type IdleViewState = {
@@ -24,6 +24,7 @@ export function useIdleViewModel(params: ViewModelParams) {
 
   const selection = useSelection(params);
   const deleteSelected = useDeleteSelected(params);
+  const goToEditSticker = useGoToEditSticker(params);
 
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
@@ -31,38 +32,26 @@ export function useIdleViewModel(params: ViewModelParams) {
       isSelected: selection.isSelected(idleState, node.id),
 
       onClick: (e) => {
-        if (
-          idleState.selectedIds.size === 1 &&
-          idleState.selectedIds.has(node.id) &&
-          !e.ctrlKey &&
-          !e.shiftKey
-        ) {
-          setViewState(goToEditSticker(node.id));
-          return;
-        }
+        const clickResult = goToEditSticker.handleNodeClick(
+          idleState,
+          node.id,
+          e,
+        );
+        if (clickResult.preventNext) return;
 
         selection.handleNodeClick(idleState, node.id, e);
       },
     })),
     layout: {
       onKeyDown: (e) => {
-        if (
-          !e.shiftKey &&
-          !e.ctrlKey &&
-          !e.altKey &&
-          !e.metaKey &&
-          idleState.selectedIds.size === 1
-        ) {
-          const [id] = idleState.selectedIds.values();
-          setViewState(goToEditSticker(id));
-          return;
-        }
+        const keyDownResult = goToEditSticker.handleKeyDown(idleState, e);
+        if (keyDownResult.preventNext) return;
+
+        deleteSelected.handleKeyDown(idleState, e);
 
         if (e.key === "s") {
           setViewState(goToAddSticker());
         }
-
-        deleteSelected.handleKeyDown(idleState, e);
       },
     },
     overlay: {
@@ -129,4 +118,12 @@ export function goToIdle({
     type: "idle",
     selectedIds: selectedIds ?? new Set(),
   };
+}
+
+export function useGoToAddSticker({ setViewState }: ViewModelParams) {
+  const handleNodeClick = (
+    idleState: IdleViewState,
+    nodeId: string,
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {};
 }
