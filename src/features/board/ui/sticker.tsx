@@ -1,5 +1,6 @@
-import clsx from "clsx";
 import { Ref } from "react";
+import clsx from "clsx";
+import { TextareaAutoSize } from "./textarea-auto-size";
 
 export function Sticker({
   id,
@@ -27,22 +28,17 @@ export function Sticker({
       data-id={id}
       ref={ref}
       className={clsx(
-        "absolute bg-yellow-300 px-2 py-4 rounded-xs shadow-md",
+        "absolute bg-yellow-300 px-2 py-4 rounded-xs shadow-md text-left",
         isSelected && "outline-2 outline-blue-500",
       )}
       style={{ transform: `translate(${x}px, ${y}px)` }}
       onClick={onClick}
     >
-      {isEditing ? (
-        <input
-          value={text}
-          className="w-full h-full"
-          autoFocus
-          onChange={(e) => onTextChange?.(e.target.value)}
-        />
-      ) : (
-        text
-      )}
+      <TextareaAutoSize
+        isEditing={isEditing ?? false}
+        value={text}
+        onChange={(value) => onTextChange?.(value)}
+      />
     </button>
   );
 }
