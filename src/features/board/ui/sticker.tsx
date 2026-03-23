@@ -7,16 +7,20 @@ export function Sticker({
   x,
   y,
   ref,
-  selected,
+  isSelected,
+  isEditing,
   onClick,
+  onTextChange,
 }: {
   id: string;
   text: string;
   x: number;
   y: number;
   ref: Ref<HTMLButtonElement>;
-  selected?: boolean;
+  isSelected?: boolean;
+  isEditing?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onTextChange?: (text: string) => void;
 }) {
   return (
     <button
@@ -24,12 +28,21 @@ export function Sticker({
       ref={ref}
       className={clsx(
         "absolute bg-yellow-300 px-2 py-4 rounded-xs shadow-md",
-        selected && "outline-2 outline-blue-500",
+        isSelected && "outline-2 outline-blue-500",
       )}
       style={{ transform: `translate(${x}px, ${y}px)` }}
       onClick={onClick}
     >
-      {text}
+      {isEditing ? (
+        <input
+          value={text}
+          className="w-full h-full"
+          autoFocus
+          onChange={(e) => onTextChange?.(e.target.value)}
+        />
+      ) : (
+        text
+      )}
     </button>
   );
 }

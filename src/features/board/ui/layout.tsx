@@ -9,7 +9,7 @@ export function Layout({
   ref: Ref<HTMLDivElement>;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="grow relative" tabIndex={0} ref={ref} {...props}>
+    <div className="grow relative outline-0" tabIndex={0} ref={ref} {...props}>
       {children}
     </div>
   );

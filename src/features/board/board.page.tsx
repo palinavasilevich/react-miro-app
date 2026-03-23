@@ -1,4 +1,4 @@
-import { useNodes } from "./model/use-nodes";
+import { useNodes } from "./model/nodes";
 import { useCanvasRect } from "./hooks/use-canvas-rect";
 import { useLayoutFocus } from "./hooks/use-layout-focus";
 import { useViewModel } from "./view-model/use-view-model";
@@ -38,16 +38,7 @@ function BoardPage() {
         />
 
         {viewModel.nodes.map((node) => (
-          <Sticker
-            id={node.id}
-            key={node.id}
-            text={node.text}
-            x={node.x}
-            y={node.y}
-            ref={nodeRef}
-            selected={node.isSelected}
-            onClick={node.onClick}
-          />
+          <Sticker key={node.id} {...node} ref={nodeRef} />
         ))}
       </Canvas>
       {viewModel.selectionWindow && (

@@ -42,11 +42,17 @@ export function useNodes() {
     setNodes((prevNodes) => [...prevNodes, newNode]);
   };
 
+  const updateStickerText = (id: string, text: string) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => (node.id === id ? { ...node, text } : node)),
+    );
+  };
+
   const deleteNodes = (ids: string[]) => {
     setNodes((prevNodes) => prevNodes.filter((node) => !ids.includes(node.id)));
   };
 
-  return { nodes, addSticker, deleteNodes };
+  return { nodes, addSticker, updateStickerText, deleteNodes };
 }
 
 export type NodesModel = ReturnType<typeof useNodes>;
