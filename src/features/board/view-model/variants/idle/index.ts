@@ -1,7 +1,6 @@
 import { distanceFromPoints } from "../../../domain/point";
 import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
 import { SelectionType } from "../../../domain/selection";
-
 import { ViewModelParams } from "../../view-model-params";
 import { ViewModel } from "../../view-model-type";
 import { goToSelectionWindow } from "../selection-window";
@@ -9,6 +8,7 @@ import { useDeleteSelected } from "./use-delete-selected";
 import { useGoToAddSticker } from "./use-go-to-add-sticker";
 import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useSelection } from "./use-selection";
+import { useMouseDown } from "./use-mouse-down";
 
 export type IdleViewState = {
   type: "idle";
@@ -26,6 +26,7 @@ export function useIdleViewModel(params: ViewModelParams) {
   const deleteSelected = useDeleteSelected(params);
   const goToEditSticker = useGoToEditSticker(params);
   const goToAddSticker = useGoToAddSticker(params);
+  const mouseDown = useMouseDown(params);
 
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
@@ -53,18 +54,7 @@ export function useIdleViewModel(params: ViewModelParams) {
       },
     },
     overlay: {
-      onMouseDown: (e) => {
-        setViewState({
-          ...idleState,
-          mouseDown: pointOnScreenToCanvas(
-            {
-              x: e.clientX,
-              y: e.clientY,
-            },
-            canvasRect,
-          ),
-        });
-      },
+      onMouseDown: (e) => mouseDown.handleOverlayMouseDown(idleState, e),
       onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
     window: {
@@ -91,12 +81,7 @@ export function useIdleViewModel(params: ViewModelParams) {
           }
         }
       },
-      onMouseUp: () => {
-        setViewState({
-          ...idleState,
-          mouseDown: undefined,
-        });
-      },
+      onMouseUp: () => mouseDown.handleWindowMouseUp(idleState),
     },
     actions: {
       addSticker: {
