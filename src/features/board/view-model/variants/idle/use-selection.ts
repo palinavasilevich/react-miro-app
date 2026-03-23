@@ -17,6 +17,10 @@ export function useSelection({ setViewState }: ViewModelParams) {
     });
   };
 
+  const isSelected = (idleState: IdleViewState, nodeId: string) => {
+    return idleState.selectedIds.has(nodeId);
+  };
+
   const handleNodeClick = (
     idleState: IdleViewState,
     nodeId: string,
@@ -29,5 +33,14 @@ export function useSelection({ setViewState }: ViewModelParams) {
     }
   };
 
-  return { handleNodeClick };
+  const handleOverlayMouseUp = (idleState: IdleViewState) => {
+    if (idleState.mouseDown) {
+      setViewState({
+        ...idleState,
+        selectedIds: selectItems(idleState.selectedIds, [], "replace"),
+      });
+    }
+  };
+
+  return { isSelected, handleNodeClick, handleOverlayMouseUp };
 }

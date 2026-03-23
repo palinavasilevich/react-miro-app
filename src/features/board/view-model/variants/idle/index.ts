@@ -1,6 +1,6 @@
 import { distanceFromPoints } from "../../../domain/point";
 import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
-import { SelectionType, selectItems } from "../../../domain/selection";
+import { SelectionType } from "../../../domain/selection";
 
 import { ViewModelParams } from "../../view-model-params";
 import { ViewModel } from "../../view-model-type";
@@ -28,7 +28,7 @@ export function useIdleViewModel(params: ViewModelParams) {
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
       ...node,
-      isSelected: idleState.selectedIds.has(node.id),
+      isSelected: selection.isSelected(idleState, node.id),
 
       onClick: (e) => {
         if (
@@ -78,14 +78,7 @@ export function useIdleViewModel(params: ViewModelParams) {
           ),
         });
       },
-      onMouseUp: () => {
-        if (idleState.mouseDown) {
-          setViewState({
-            ...idleState,
-            selectedIds: selectItems(idleState.selectedIds, [], "replace"),
-          });
-        }
-      },
+      onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
     window: {
       onMouseMove: (e) => {
