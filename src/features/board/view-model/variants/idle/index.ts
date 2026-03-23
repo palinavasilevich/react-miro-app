@@ -7,6 +7,7 @@ import { ViewModel } from "../../view-model-type";
 import { goToAddSticker } from "../add-sticker";
 import { goToEditSticker } from "../edit-sticker";
 import { goToSelectionWindow } from "../selection-window";
+import { useDeleteSelected } from "./use-delete-selected";
 import { useSelection } from "./use-selection";
 
 export type IdleViewState = {
@@ -22,18 +23,7 @@ export function useIdleViewModel(params: ViewModelParams) {
   const { nodesModel, setViewState, canvasRect } = params;
 
   const selection = useSelection(params);
-
-  const deleteSelected = (viewState: IdleViewState) => {
-    if (viewState.selectedIds.size > 0) {
-      const ids = Array.from(viewState.selectedIds);
-      nodesModel.deleteNodes(ids);
-
-      setViewState({
-        ...viewState,
-        selectedIds: new Set(),
-      });
-    }
-  };
+  const deleteSelected = useDeleteSelected(params);
 
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
@@ -72,9 +62,7 @@ export function useIdleViewModel(params: ViewModelParams) {
           setViewState(goToAddSticker());
         }
 
-        if (e.key === "Delete" || e.key === "Backspace") {
-          deleteSelected(idleState);
-        }
+        deleteSelected.handleKeyDown(idleState, e);
       },
     },
     overlay: {
