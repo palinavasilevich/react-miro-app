@@ -1,5 +1,6 @@
 import { useCallback, type RefCallback } from "react";
 import { rqClient } from "@/shared/api/instance";
+import type { ApiSchemas } from "@/shared/api/schema";
 import type { BoardsSortOption } from "./use-boards-filters";
 import { keepPreviousData } from "@tanstack/react-query";
 
@@ -34,7 +35,7 @@ export function useBoardsList({
       {
         initialPageParam: 1,
         pageParamName: "page",
-        getNextPageParam: (lastPage, _, lastPageParams) =>
+        getNextPageParam: (lastPage: ApiSchemas["BoardsList"], _: ApiSchemas["BoardsList"][], lastPageParams: number) =>
           Number(lastPageParams) < lastPage.totalPages
             ? Number(lastPageParams) + 1
             : null,
