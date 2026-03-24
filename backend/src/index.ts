@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.js";
 import boardsRouter from "./routes/boards.js";
@@ -6,6 +7,12 @@ import boardsRouter from "./routes/boards.js";
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 

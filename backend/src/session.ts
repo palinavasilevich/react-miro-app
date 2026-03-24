@@ -12,7 +12,7 @@ const ACCESS_TOKEN_EXPIRY = "15m";
 const REFRESH_TOKEN_EXPIRY = "7d";
 
 export function createRefreshTokenCookie(refreshToken: string): string {
-  return `refreshToken=${refreshToken}; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict`;
+  return `refreshToken=${refreshToken}; HttpOnly; Max-Age=604800; Path=/; SameSite=None; Secure`;
 }
 
 export async function generateTokens(session: Session) {
