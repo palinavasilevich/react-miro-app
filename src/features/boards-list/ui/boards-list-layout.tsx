@@ -1,5 +1,6 @@
 import { Skeleton } from "@/shared/ui/kit/skeleton";
 import type { ViewMode } from "./view-mode-toggle";
+import { Loader } from "@/shared/ui/loader";
 
 type BoardsListLayoutProps = {
   header: React.ReactNode;
@@ -118,7 +119,7 @@ export function BoardsListLayoutContent({
 }: BoardsListLayoutContent) {
   return (
     <div>
-      {isPending && <div className="text-center py-10">Loading...</div>}
+      {isPending && <Loader />}
 
       {mode === "list" && renderList && (
         <BoardsListLayoutList>{renderList?.()}</BoardsListLayoutList>

@@ -6,6 +6,7 @@ import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useLogin } from "../model/use-login";
+import { Loader } from "lucide-react";
 
 const loginSchema = z.object({
   email: z
@@ -34,7 +35,9 @@ export function LoginForm() {
 
   const onSubmit = form.handleSubmit((data) => login(data));
 
+  
   if (isPending) {
+    <Loader />;
   }
 
   return (
