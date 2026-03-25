@@ -37,8 +37,8 @@ export function TextareaAutoSize({
           autoFocus
           onChange={(e) => onChange?.(e.target.value)}
           style={{
-            width: width + 2,
-            height: height + 2,
+            width: width + 3,
+            height: height + 3,
           }}
         />
       )}

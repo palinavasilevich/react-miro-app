@@ -52,7 +52,35 @@ export function useNodes() {
     setNodes((prevNodes) => prevNodes.filter((node) => !ids.includes(node.id)));
   };
 
-  return { nodes, addSticker, updateStickerText, deleteNodes };
+  const updateNodesPositions = (
+    positions: {
+      id: string;
+      x: number;
+      y: number;
+    }[],
+  ) => {
+    const record = Object.fromEntries(
+      positions.map((position) => [position.id, position]),
+    );
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        const newPosition = record[node.id];
+        if (newPosition) {
+          return { ...node, x: newPosition.x, y: newPosition.y };
+        }
+        return node;
+      }),
+    );
+  };
+
+  return {
+    nodes,
+    addSticker,
+    updateStickerText,
+    deleteNodes,
+    updateNodesPositions,
+  };
 }
 
 export type NodesModel = ReturnType<typeof useNodes>;

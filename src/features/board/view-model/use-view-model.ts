@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   AddStickerViewState,
   useAddStickerViewModel,
@@ -6,7 +5,7 @@ import {
 import { goToIdle, IdleViewState, useIdleViewModel } from "./variants/idle";
 import { ViewModel } from "./view-model-type";
 import { ViewModelParams } from "./view-model-params";
-
+import { useState } from "react";
 import {
   SelectionWindowViewState,
   useSelectionWindowViewModel,
@@ -15,12 +14,17 @@ import {
   EditStickerViewState,
   useEditStickerViewModel,
 } from "./variants/edit-sticker";
+import {
+  NodesDraggingViewState,
+  useNodesDraggingViewModel,
+} from "./variants/nodes-dragging";
 
 export type ViewState =
   | AddStickerViewState
   | EditStickerViewState
   | IdleViewState
-  | SelectionWindowViewState;
+  | SelectionWindowViewState
+  | NodesDraggingViewState;
 
 export function useViewModel(params: Omit<ViewModelParams, "setViewState">) {
   const [viewState, setViewState] = useState<ViewState>(() => goToIdle());
@@ -34,13 +38,13 @@ export function useViewModel(params: Omit<ViewModelParams, "setViewState">) {
   const editStickerViewModel = useEditStickerViewModel(newParams);
   const idleViewModel = useIdleViewModel(newParams);
   const selectionWindowViewModel = useSelectionWindowViewModel(newParams);
+  const nodesDraggingViewModel = useNodesDraggingViewModel(newParams);
 
   let viewModel: ViewModel;
   switch (viewState.type) {
-    case "add-sticker": {
+    case "add-sticker":
       viewModel = addStickerViewModel();
       break;
-    }
     case "edit-sticker": {
       viewModel = editStickerViewModel(viewState);
       break;
@@ -51,6 +55,10 @@ export function useViewModel(params: Omit<ViewModelParams, "setViewState">) {
     }
     case "selection-window": {
       viewModel = selectionWindowViewModel(viewState);
+      break;
+    }
+    case "nodes-dragging": {
+      viewModel = nodesDraggingViewModel(viewState);
       break;
     }
     default:

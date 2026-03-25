@@ -1,3 +1,4 @@
+import React from "react";
 import { Rect } from "../domain/rect";
 
 type ViewModeNode = {
@@ -9,6 +10,8 @@ type ViewModeNode = {
   isEditing?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onTextChange?: (text: string) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export type ViewModel = {
