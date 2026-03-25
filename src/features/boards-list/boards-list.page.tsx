@@ -47,10 +47,15 @@ function BoardsListPage() {
             description="Here you can view and manage your boards"
             actions={
               <>
-                <Button variant="outline" onClick={templatesModal.open}>
+                <Button
+                  variant="outline"
+                  className="cursor-pointer"
+                  onClick={templatesModal.open}
+                >
                   Select template
                 </Button>
                 <Button
+                  className="cursor-pointer"
                   disabled={createBoardMutation.isPending}
                   onClick={createBoardMutation.createBoard}
                 >

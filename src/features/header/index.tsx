@@ -22,7 +22,7 @@ export function AppHeader() {
             variant="outline"
             size="sm"
             onClick={() => logout()}
-            className="hover:bg-destructive/10"
+            className="cursor-pointer"
           >
             Logout
           </Button>

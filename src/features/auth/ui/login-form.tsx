@@ -6,7 +6,7 @@ import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useLogin } from "../model/use-login";
-import { Loader } from "lucide-react";
+import { Loader } from "@/shared/ui/loader";
 
 const loginSchema = z.object({
   email: z
@@ -34,11 +34,6 @@ export function LoginForm() {
   const { isPending, errorMessage, login } = useLogin();
 
   const onSubmit = form.handleSubmit((data) => login(data));
-
-  
-  if (isPending) {
-    <Loader />;
-  }
 
   return (
     <form className="flex flex-col gap-4" onSubmit={onSubmit}>
@@ -83,7 +78,7 @@ export function LoginForm() {
       )}
 
       <Button type="submit" disabled={isPending} className="cursor-pointer">
-        Login
+        {isPending ? <Loader text="Sending..." /> : "Login"}
       </Button>
     </form>
   );

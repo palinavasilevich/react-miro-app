@@ -12,10 +12,10 @@ export function ViewModeToggle({ value, onChange }: ViewModeToggleProps) {
   return (
     <Tabs defaultValue={value} onValueChange={(e) => onChange(e as ViewMode)}>
       <TabsList>
-        <TabsTrigger value="list">
+        <TabsTrigger value="list" className="cursor-pointer">
           <ListIcon />
         </TabsTrigger>
-        <TabsTrigger value="grid">
+        <TabsTrigger value="grid" className="cursor-pointer">
           <ImagesIcon />
         </TabsTrigger>
       </TabsList>

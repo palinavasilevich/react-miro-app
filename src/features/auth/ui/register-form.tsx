@@ -6,6 +6,7 @@ import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useRegister } from "../model/use-register";
 import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
+import { Loader } from "@/shared/ui/loader";
 
 const registerSchema = z
   .object({
@@ -91,7 +92,7 @@ export function RegisterForm() {
         <p className="text-destructive text-sm">{errorMessage}</p>
       )}
       <Button type="submit" disabled={isPending} className="cursor-pointer">
-        Sign Up
+        {isPending ? <Loader text="Sending..." /> : "Sign Up"}
       </Button>
     </form>
   );
