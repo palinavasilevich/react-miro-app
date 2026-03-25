@@ -63,6 +63,17 @@ export function generateBoards(count: number): Board[] {
   });
 }
 
+export type StickerNode = {
+  id: string;
+  type: "sticker";
+  text: string;
+  x: number;
+  y: number;
+};
+
+// boardId -> nodes[]
+export const nodesByBoard = new Map<string, StickerNode[]>();
+
 export const users: User[] = [
   { id: "1", email: "admin@gmail.com", password: "123456" },
 ];

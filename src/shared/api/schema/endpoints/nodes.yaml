@@ -1,0 +1,224 @@
+schemas:
+  StickerNode:
+    type: object
+    required:
+      - id
+      - type
+      - text
+      - x
+      - y
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - sticker
+      text:
+        type: string
+      x:
+        type: number
+      y:
+        type: number
+
+  CreateNode:
+    type: object
+    required:
+      - type
+      - text
+      - x
+      - y
+    properties:
+      type:
+        type: string
+        enum:
+          - sticker
+      text:
+        type: string
+      x:
+        type: number
+      y:
+        type: number
+
+  UpdateNode:
+    type: object
+    properties:
+      text:
+        type: string
+      x:
+        type: number
+      y:
+        type: number
+
+  NodePosition:
+    type: object
+    required:
+      - id
+      - x
+      - y
+    properties:
+      id:
+        type: string
+      x:
+        type: number
+      y:
+        type: number
+
+  BatchUpdateNodePositions:
+    type: object
+    required:
+      - positions
+    properties:
+      positions:
+        type: array
+        items:
+          $ref: "#/schemas/NodePosition"
+
+  BatchDeleteNodes:
+    type: object
+    required:
+      - ids
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+
+getBoardNodes:
+  summary: Get all nodes for a board
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: List of nodes
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/schemas/StickerNode"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
+
+createNode:
+  summary: Create a node on a board
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#/schemas/CreateNode"
+  responses:
+    "201":
+      description: Node created
+      content:
+        application/json:
+          schema:
+            $ref: "#/schemas/StickerNode"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
+
+updateNode:
+  summary: Update a node
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: nodeId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#/schemas/UpdateNode"
+  responses:
+    "200":
+      description: Node updated
+      content:
+        application/json:
+          schema:
+            $ref: "#/schemas/StickerNode"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
+
+deleteNodes:
+  summary: Delete nodes from a board
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#/schemas/BatchDeleteNodes"
+  responses:
+    "204":
+      description: Nodes deleted
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
+
+updateNodePositions:
+  summary: Batch update node positions on a board
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#/schemas/BatchUpdateNodePositions"
+  responses:
+    "200":
+      description: Positions updated
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/schemas/StickerNode"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"

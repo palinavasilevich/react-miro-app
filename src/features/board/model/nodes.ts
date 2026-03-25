@@ -1,77 +1,77 @@
-import { useState } from "react";
-
-type NodeBase = {
-  id: string;
-  type: string;
-};
-
-type StickerNode = NodeBase & {
-  type: "sticker";
-  text: string;
-  x: number;
-  y: number;
-};
-
-type Node = StickerNode;
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { rqClient } from "@/shared/api/instance";
 
 export function useNodes() {
-  const [nodes, setNodes] = useState<Node[]>([
-    {
-      id: "1",
-      type: "sticker",
-      text: "Hello 1",
-      x: 100,
-      y: 100,
-    },
-    {
-      id: "2",
-      type: "sticker",
-      text: "Hello 2",
-      x: 200,
-      y: 200,
-    },
-  ]);
+  const { boardId } = useParams();
+  const queryClient = useQueryClient();
+
+  const nodesQueryOptions = rqClient.queryOptions(
+    "get",
+    "/boards/{boardId}/nodes",
+    { params: { path: { boardId: boardId! } } },
+  );
+
+  const { data: nodes = [] } = rqClient.useQuery(
+    "get",
+    "/boards/{boardId}/nodes",
+    { params: { path: { boardId: boardId! } } },
+  );
+
+  const invalidateNodes = () => queryClient.invalidateQueries(nodesQueryOptions);
+
+  const addStickerMutation = rqClient.useMutation(
+    "post",
+    "/boards/{boardId}/nodes",
+    { onSettled: invalidateNodes },
+  );
+
+  const updateNodeMutation = rqClient.useMutation(
+    "patch",
+    "/boards/{boardId}/nodes/{nodeId}",
+    { onSettled: invalidateNodes },
+  );
+
+  const deleteNodesMutation = rqClient.useMutation(
+    "delete",
+    "/boards/{boardId}/nodes",
+    { onSettled: invalidateNodes },
+  );
+
+  const updatePositionsMutation = rqClient.useMutation(
+    "patch",
+    "/boards/{boardId}/nodes/positions",
+    { onSettled: invalidateNodes },
+  );
 
   const addSticker = (data: { text: string; x: number; y: number }) => {
-    const newNode: Node = {
-      id: crypto.randomUUID(),
-      type: "sticker",
-      ...data,
-    };
-
-    setNodes((prevNodes) => [...prevNodes, newNode]);
+    addStickerMutation.mutate({
+      params: { path: { boardId: boardId! } },
+      body: { type: "sticker", ...data },
+    });
   };
 
   const updateStickerText = (id: string, text: string) => {
-    setNodes((prevNodes) =>
-      prevNodes.map((node) => (node.id === id ? { ...node, text } : node)),
-    );
+    updateNodeMutation.mutate({
+      params: { path: { boardId: boardId!, nodeId: id } },
+      body: { text },
+    });
   };
 
   const deleteNodes = (ids: string[]) => {
-    setNodes((prevNodes) => prevNodes.filter((node) => !ids.includes(node.id)));
+    deleteNodesMutation.mutate({
+      params: { path: { boardId: boardId! } },
+      body: { ids },
+    });
   };
 
   const updateNodesPositions = (
-    positions: {
-      id: string;
-      x: number;
-      y: number;
-    }[],
+    positions: { id: string; x: number; y: number }[],
   ) => {
-    const record = Object.fromEntries(
-      positions.map((position) => [position.id, position]),
-    );
-
-    setNodes((prevNodes) =>
-      prevNodes.map((node) => {
-        const newPosition = record[node.id];
-        if (newPosition) {
-          return { ...node, x: newPosition.x, y: newPosition.y };
-        }
-        return node;
-      }),
-    );
+    updatePositionsMutation.mutate({
+      params: { path: { boardId: boardId! } },
+      body: { positions },
+    });
   };
 
   return {

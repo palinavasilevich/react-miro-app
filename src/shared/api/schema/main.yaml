@@ -45,3 +45,19 @@ paths:
   /boards/{boardId}/rename:
     put:
       $ref: "./endpoints/boards.yaml#/renameBoard"
+
+  /boards/{boardId}/nodes:
+    get:
+      $ref: "./endpoints/nodes.yaml#/getBoardNodes"
+    post:
+      $ref: "./endpoints/nodes.yaml#/createNode"
+    delete:
+      $ref: "./endpoints/nodes.yaml#/deleteNodes"
+
+  /boards/{boardId}/nodes/positions:
+    patch:
+      $ref: "./endpoints/nodes.yaml#/updateNodePositions"
+
+  /boards/{boardId}/nodes/{nodeId}:
+    patch:
+      $ref: "./endpoints/nodes.yaml#/updateNode"
