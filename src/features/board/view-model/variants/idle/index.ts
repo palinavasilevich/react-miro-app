@@ -61,6 +61,7 @@ export function useIdleViewModel(params: ViewModelParams) {
       onKeyDown: (e) => {
         deleteSelected.handleKeyDown(idleState, e);
         goToAddSticker.handleKeyDown(e);
+        selection.handleEscapeKey(idleState, e);
       },
     },
     overlay: {

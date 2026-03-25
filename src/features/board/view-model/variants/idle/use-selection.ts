@@ -42,5 +42,17 @@ export function useSelection({ setViewState }: ViewModelParams) {
     }
   };
 
-  return { isSelected, handleNodeClick, handleOverlayMouseUp };
+  const handleEscapeKey = (
+    idleState: IdleViewState,
+    e: React.KeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (e.key === "Escape" && idleState.selectedIds.size > 0) {
+      setViewState({
+        ...idleState,
+        selectedIds: selectItems(idleState.selectedIds, [], "replace"),
+      });
+    }
+  };
+
+  return { isSelected, handleNodeClick, handleOverlayMouseUp, handleEscapeKey };
 }
