@@ -2,6 +2,8 @@ import { IdleViewState } from ".";
 import { ViewModelParams } from "../../view-model-params";
 import { goToEditSticker } from "../edit-sticker";
 
+type HandlerResult = { preventNext: boolean };
+
 export function useGoToEditSticker(params: ViewModelParams) {
   const { setViewState } = params;
 
@@ -9,20 +11,19 @@ export function useGoToEditSticker(params: ViewModelParams) {
     idleState: IdleViewState,
     nodeId: string,
     e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  ): HandlerResult => {
     if (
       idleState.selectedIds.size === 1 &&
       idleState.selectedIds.has(nodeId) &&
       !e.ctrlKey &&
+      !e.metaKey &&
       !e.shiftKey
     ) {
       setViewState(goToEditSticker(nodeId));
       return { preventNext: true };
     }
 
-    return {
-      preventNext: false,
-    };
+    return { preventNext: false };
   };
 
   return {

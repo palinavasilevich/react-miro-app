@@ -9,27 +9,22 @@ export function useGoToNodesDragging({
   setViewState,
 }: ViewModelParams) {
   const handleWindowMouseMove = (idleState: IdleViewState, e: MouseEvent) => {
-    if (idleState.mouseDown && idleState.mouseDown.type === "node") {
-      const currentPoint = pointOnScreenToCanvas(
-        {
-          x: e.clientX,
-          y: e.clientY,
-        },
-        canvasRect,
-      );
+    const { mouseDown } = idleState;
+    if (mouseDown?.type !== "node") return;
 
-      if (distanceFromPoints(idleState.mouseDown, currentPoint) > 5) {
-        setViewState(
-          goToNodesDragging({
-            startPoint: idleState.mouseDown,
-            endPoint: currentPoint,
-            nodesToMove: new Set([
-              ...idleState.selectedIds,
-              idleState.mouseDown.nodeId,
-            ]),
-          }),
-        );
-      }
+    const currentPoint = pointOnScreenToCanvas(
+      { x: e.clientX, y: e.clientY },
+      canvasRect,
+    );
+
+    if (distanceFromPoints(mouseDown, currentPoint) > 5) {
+      setViewState(
+        goToNodesDragging({
+          startPoint: mouseDown,
+          endPoint: currentPoint,
+          nodesToMove: new Set([...idleState.selectedIds, mouseDown.nodeId]),
+        }),
+      );
     }
   };
 

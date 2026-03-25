@@ -70,8 +70,11 @@ export function useIdleViewModel(params: ViewModelParams) {
     },
     window: {
       onMouseMove: (e) => {
-        goToNodesDragging.handleWindowMouseMove(idleState, e);
-        goToSelectionWindow.handleWindowMouseMove(idleState, e);
+        if (idleState.mouseDown?.type === "node") {
+          goToNodesDragging.handleWindowMouseMove(idleState, e);
+        } else if (idleState.mouseDown?.type === "overlay") {
+          goToSelectionWindow.handleWindowMouseMove(idleState, e);
+        }
       },
 
       onMouseUp: () => mouseDown.handleWindowMouseUp(idleState),

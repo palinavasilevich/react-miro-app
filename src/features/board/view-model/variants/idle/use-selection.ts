@@ -26,7 +26,7 @@ export function useSelection({ setViewState }: ViewModelParams) {
     nodeId: string,
     e: React.MouseEvent<HTMLButtonElement>,
   ) => {
-    if (e.ctrlKey || e.shiftKey) {
+    if (e.ctrlKey || e.metaKey || e.shiftKey) {
       select(idleState, [nodeId], "toggle");
     } else {
       select(idleState, [nodeId], "replace");

@@ -8,24 +8,22 @@ export function useGoToSelectionWindow(params: ViewModelParams) {
   const { canvasRect, setViewState } = params;
 
   const handleWindowMouseMove = (idleState: IdleViewState, e: MouseEvent) => {
-    if (idleState.mouseDown && idleState.mouseDown.type === "overlay") {
-      const currentPoint = pointOnScreenToCanvas(
-        {
-          x: e.clientX,
-          y: e.clientY,
-        },
-        canvasRect,
-      );
+    const { mouseDown } = idleState;
+    if (mouseDown?.type !== "overlay") return;
 
-      if (distanceFromPoints(idleState.mouseDown, currentPoint) > 5) {
-        setViewState(
-          goToSelectionWindow({
-            startPoint: idleState.mouseDown,
-            endPoint: currentPoint,
-            initialSelectedIds: e.shiftKey ? idleState.selectedIds : undefined,
-          }),
-        );
-      }
+    const currentPoint = pointOnScreenToCanvas(
+      { x: e.clientX, y: e.clientY },
+      canvasRect,
+    );
+
+    if (distanceFromPoints(mouseDown, currentPoint) > 5) {
+      setViewState(
+        goToSelectionWindow({
+          startPoint: mouseDown,
+          endPoint: currentPoint,
+          initialSelectedIds: e.shiftKey ? idleState.selectedIds : undefined,
+        }),
+      );
     }
   };
 
